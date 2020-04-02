@@ -38,17 +38,53 @@
           opacity: 1;
           transition: 0s
         }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        ul.top {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: rgb(41, 45, 48);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5vh;
+            z-index: 999
+        }
+        .top li a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-family:georgia,garamond,serif;
+            font-size:16px;
+            font-style:italic;
+        }
+        li a:hover:not(.active) {
+            background-color: #9E9E9E;
+        }
         </style>
 </head>
-<body>
-    <h1>Select default track</h1>
-    <select id="select1" name="select1">
-        <option>Volvo</option>
-        <option value="saab">Saab</option>
-        <option value="mercedes">Mercedes</option>
-        <option value="audi">Audi</option>
-    </select> <button class="button" onclick="setTrack()">SET TRACK</button>
-
+<body body bgcolor="#333232">
+    <ul class="top">
+        <li class="top"><a href="index.html">Map</a></li>
+        <li class="top"><a class="active" href="admin_panel.html">Admin panel</a></li>
+        <li class="top" style="float:right"><a fflohref="#about">Dev</a></li>
+      </ul>
+    <div style="margin-top: 10vh">
+        <h1>Select default track</h1>
+        <select id="select1" name="select1">
+            <option>Options not loaded yet...</option>
+        </select> <button class="button" onclick="setTrack()">SET TRACK</button>
+    
+    </div>
+    
     <script>
         function setTrack(){
             var e = document.getElementById("select1");
