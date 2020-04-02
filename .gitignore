@@ -8,3 +8,4 @@ parse_csv_coords.py
 login.js
 http-handler/db_login.py
 .vscode/settings.json
+__pycache__
