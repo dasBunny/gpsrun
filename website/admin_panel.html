@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <style>
+        .button {
+          position: relative;
+          background-color: #4CAF50;
+          border: none;
+          font-size: 28px;
+          color: #FFFFFF;
+          padding: 20px;
+          width: 200px;
+          text-align: center;
+          -webkit-transition-duration: 0.4s; /* Safari */
+          transition-duration: 0.4s;
+          text-decoration: none;
+          overflow: hidden;
+          cursor: pointer;
+        }
+        
+        .button:after {
+          content: "";
+          background: #90EE90;
+          display: block;
+          position: absolute;
+          padding-top: 300%;
+          padding-left: 350%;
+          margin-left: -20px!important;
+          margin-top: -120%;
+          opacity: 0;
+          transition: all 0.8s
+        }
+        
+        .button:active:after {
+          padding: 0;
+          margin: 0;
+          opacity: 1;
+          transition: 0s
+        }
+        </style>
+</head>
+<body>
+    <h1>Select default track</h1>
+    <select id="select1" name="select1">
+        <option>Volvo</option>
+        <option value="saab">Saab</option>
+        <option value="mercedes">Mercedes</option>
+        <option value="audi">Audi</option>
+    </select> <button class="button" onclick="setTrack()">SET TRACK</button>
+
+    <script>
+        function setTrack(){
+            var e = document.getElementById("select1");
+            trackname1 = e.options[e.selectedIndex].value;
+            console.log(trackname1);
+        }
+        function populateSelectMenu() {
+            console.log("populating");
+            $.ajax({
+                type: "POST",
+                url: "get_tracknames.php",
+                data: {},
+                dataType:'JSON', 
+                success: function(response){
+                    console.log(response);
+                    var select = document.getElementById('select1'), i = 0, il=response.length, length = select.options.length;
+                    for (j = length-1; j >= 0; j--) {
+                        select.options[j] = null;
+                    }
+                    for(;i<il;i++){
+                        console.log(response[i]);
+                        var opt = document.createElement("option");
+                        opt.value=response[i];
+                        opt.innerHTML = response[i];
+                        select.appendChild(opt);
+                    }
+                }
+            });
+        }
+
+        populateSelectMenu();
+    </script>
+</body>
