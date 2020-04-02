@@ -221,24 +221,7 @@
         wangen.bindTooltip("Wangen im Allgäu", {permanent: false, className: "my-label", offset: [0, 0] });
         var runner_2;
         var line3;
-/*        var runner;
-        var line1;
-        var line2;
-        $.getJSON("test.json", function(data) {
-            json_result = JSON.parse(JSON.stringify(data));
-            console.log(data);
-            runner = L.marker(L.latLng(parseFloat(json_result.marker1.currentPosition["lat"]), 
-                parseFloat(json_result.marker1.currentPosition["long"])),{icon: runner_blue, riseOnHover: true});
-            runner.bindTooltip(json_result.marker1.currentPosition["timestamp"], {permanent: false, className: "my-label", offset: [0, 0] });
-            runner.addTo(mymap);
-
-            
-
-            line1 = L.polyline(json_result.marker1.track, {color: 'red'}).addTo(mymap);
-            line2 = L.polyline(json_result.tracks.track1, {color: 'blue'}).addTo(mymap);
-        });
-
-       // var timer=setInterval(update,5000); */
+        
        var trackname1='riefensbeek'; 
         $.ajax({
             type: "POST",
