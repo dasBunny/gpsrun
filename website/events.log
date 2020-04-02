@@ -1,0 +1,97 @@
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Started on port 1949
+INFO:root:Received GET request at 2020-04-01 01:21:31
+INFO:root:Started on port 1949
+INFO:root:Received GET request at 2020-04-01 01:21:59
+INFO:root:Arguments: /id=stick1/token=1234/lng=34/lat=41
+INFO:root:Started on port 1949
+INFO:root:[2020-04-01 01:24:25] Received GET request: /id=stick1/token=1234/lng=34/lat=41
+INFO:root:[2020-04-01 01:25:16] Started on port 1949
+INFO:root:[2020-04-01 01:28:33] Started on port 1949
+INFO:root:[2020-04-01 01:28:36] Received GET request: /id=stick1/token=1234/lng=34/lat=41
+INFO:root:[2020-04-01 01:28:36] Matching parameters, checking token.
+INFO:root:[2020-04-01 01:29:39] Started on port 1949
+INFO:root:[2020-04-01 01:29:43] Received GET request: /id=stick1/token=1234/lng=34/lat=41
+INFO:root:[2020-04-01 01:29:43] Matching parameters, checking token.
+INFO:root:[2020-04-01 01:29:43] Token OK - Inserting data with trackname sticky
+INFO:root:[2020-04-01 01:30:02] Started on port 1949
+INFO:root:[2020-04-01 01:30:18] Started on port 1949
+INFO:root:[2020-04-01 01:31:04] Received GET request: /id=stick1/token=1234/lng=34
+INFO:root:[2020-04-01 01:31:04] Missing parameters
+INFO:root:[2020-04-01 01:31:18] Received GET request: /id=stick1/token=14234/lng=34/lat=41
+INFO:root:[2020-04-01 01:31:18] Matching parameters, checking token.
+INFO:root:[2020-04-01 01:31:18] Bad Token
+INFO:root:[2020-04-01 01:45:13] Received GET request: /id=stick1/token=14234/lng=34/lat=41
+INFO:root:[2020-04-01 01:45:13] Matching parameters, checking token.
+INFO:root:[2020-04-01 01:45:13] Bad Token
+INFO:root:[2020-04-01 01:47:00] Started on port 1949
+INFO:root:[2020-04-01 01:50:46] Received GET request: /id=server/token=1234/lng=51/lat=9
+INFO:root:[2020-04-01 01:50:46] Matching parameters, checking token.
+INFO:root:[2020-04-01 01:50:46] Token OK - Inserting data with trackname dev
+INFO:root:[2020-04-01 01:52:04] Received GET request: /id=server/token=1234/lng=9/lat=51
+INFO:root:[2020-04-01 01:52:04] Matching parameters, checking token.
+INFO:root:[2020-04-01 01:52:04] Token OK - Inserting data with trackname dev
+INFO:root:[2020-04-01 02:18:46] Received GET request: /id=server/token=1234/lng=8/lat=52
+INFO:root:[2020-04-01 02:18:46] Matching parameters, checking token.
+INFO:root:[2020-04-01 02:18:46] Token OK - Inserting data with trackname dev

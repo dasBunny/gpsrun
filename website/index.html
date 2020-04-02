@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>GPS Staffelstab</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+    crossorigin=""></script>
+    <script> 
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .sidebar {
+            height: 95vh;
+            width: 0;
+            position: fixed;
+            z-index: 999;
+            top: 5vh;
+            right: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.1s;
+            padding-top: 60px;
+        }
+        .sidebar a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            color: #f1f1f1;
+        }
+        .sidebar .closebtn {
+            position: absolute;
+            top: 0;
+            left: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+        ul.top {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: rgb(41, 45, 48);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5vh;
+            z-index: 999
+        }
+        .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #111;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            width: 250px;
+        }
+        .top li a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-family:georgia,garamond,serif;
+            font-size:16px;
+            font-style:italic;
+        }
+        li a:hover:not(.active) {
+            background-color: #9E9E9E;
+        }
+    </style>
+</head>
+<body>
+    <ul class="top">
+        <li class="top"><a class="active" href="mmr.html">MMR</a></li>
+        <li class="top"><a href="wl.html">W/L</a></li>
+        <li class="top"><a href="kd.html">K/D</a></li>
+        <li class="top" style="float:right"><button class="openbtn" onclick="openNav()">☰ Sidebar</button></li>
+    </ul>
+    <div id="mapid" style="height: 95vh; width: 100vw; top: 5vh"></div>
+    <div id="mySidebar" class="sidebar">
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Marker 1</a>
+        <a><select id="select1" name="select1">
+            <option>Volvo</option>
+            <option value="saab">Saab</option>
+            <option value="mercedes">Mercedes</option>
+            <option value="audi">Audi</option>
+        </select> <button onclick="update1()">GO</button></a>
+
+    </div>
+    <script>
+        function update1(){
+            var e = document.getElementById("select1");
+            trackname1 = e.options[e.selectedIndex].value;
+            console.log(trackname1);
+            update();
+        }
+        function populateSelectMenu() {
+            $.ajax({
+                type: "POST",
+                url: "get_tracknames.php",
+                data: {},
+                dataType:'JSON', 
+                success: function(response){
+                    console.log(response);
+                    var select = document.getElementById('select1'), i = 0, il=response.length, length = select.options.length;
+                    for (j = length-1; j >= 0; j--) {
+                        select.options[j] = null;
+                    }
+                    for(;i<il;i++){
+                        console.log(response[i]);
+                        var opt = document.createElement("option");
+                        opt.value=response[i];
+                        opt.innerHTML = response[i];
+                        select.appendChild(opt);
+                    }
+                }
+            });
+        }
+        var sidebarOpen = false;
+        function openNav() {
+            if(sidebarOpen){
+                document.getElementById("mySidebar").style.width = "0";
+                sidebarOpen = false;
+            }else{
+                document.getElementById("mySidebar").style.width = "250px";
+                sidebarOpen = true;
+                populateSelectMenu();
+            }
+        }
+        function update() {
+            $.ajax({
+                type: "POST",
+                url: "get_coords.php",
+                data: {trackname: trackname1},
+                dataType:'JSON', 
+                success: function(response){
+                    console.log(response);
+                    json_result = JSON.parse(JSON.stringify(response));
+                    console.log(json_result.marker["lat"]);
+                    line3.setLatLngs(json_result.track);
+                    runner_2.setLatLng(L.latLng(parseFloat(json_result.marker["lat"]), parseFloat(json_result.marker["long"])));
+                    runner_2.bindTooltip(json_result.marker["timestamp"], {permanent: false, className: "my-label", offset: [0, 0] });
+                    mymap.fitBounds(line3.getBounds());
+                }       
+            });
+        }
+
+        function populateMap() {
+            console.log(trackname1);
+            $.ajax({
+                    type: "POST",
+                    url: "get_coords.php",
+                    data: {trackname: trackname1},
+                    dataType:'JSON', 
+                    success: function(response){
+                        console.log(response);
+                        json_result = JSON.parse(JSON.stringify(response));
+                        console.log(json_result.marker["lat"]); 
+                        runner_2 = L.marker(L.latLng(parseFloat(json_result.marker["lat"]), 
+                    parseFloat(json_result.marker["long"])),{icon: runner_black, riseOnHover: true});
+                    runner_2.bindTooltip(json_result.marker["timestamp"], {permanent: false, className: "my-label", offset: [0, 0] });
+                    runner_2.addTo(mymap);
+                    line3 = L.polyline(json_result.track, {color: 'orange'}).addTo(mymap);
+                    mymap.fitBounds(line3.getBounds());
+                }
+            });
+        }
+        
+        var mymap = L.map('mapid').setView([50, 8.8], 7);
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZGFzYnVubnkiLCJhIjoiY2s3amdmNDRhMHQ0bDNrbzJwazd3eGFtMCJ9.NF3ZMkRlGqK08TK617teKw', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: 'pk.eyJ1IjoiZGFzYnVubnkiLCJhIjoiY2s3amdmNDRhMHQ0bDNrbzJwazd3eGFtMCJ9.NF3ZMkRlGqK08TK617teKw'
+        }).addTo(mymap);
+        var latlngs = [
+            [45.51, -122.68],
+            [37.77, -122.43],
+            [34.04, -118.2]
+        ];
+
+        var runner_blue = L.icon({
+        iconUrl: 'laeufer.png',
+        iconSize:     [38, 38], // size of the icon
+       // shadowSize:   [50, 64], // size of the shadow
+       // iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+       // shadowAnchor: [4, 62],  // the same for the shadow
+       // popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+        var runner_black = L.icon({
+        iconUrl: 'laeufer_black.png',
+        iconSize:     [38, 38], // size of the icon
+       // shadowSize:   [50, 64], // size of the shadow
+       // iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+       // shadowAnchor: [4, 62],  // the same for the shadow
+       // popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+        var la_garenne = L.marker([48.905, 2.2436],{riseOnHover: true}).addTo(mymap);
+        var wangen = L.marker([47.6875, 9.8318],{riseOnHover: true}).addTo(mymap);
+        la_garenne.bindTooltip("La Garenne", {permanent: false, className: "my-label", offset: [0, 0] });
+        wangen.bindTooltip("Wangen im Allgäu", {permanent: false, className: "my-label", offset: [0, 0] });
+        var runner_2;
+        var line3;
+/*        var runner;
+        var line1;
+        var line2;
+        $.getJSON("test.json", function(data) {
+            json_result = JSON.parse(JSON.stringify(data));
+            console.log(data);
+            runner = L.marker(L.latLng(parseFloat(json_result.marker1.currentPosition["lat"]), 
+                parseFloat(json_result.marker1.currentPosition["long"])),{icon: runner_blue, riseOnHover: true});
+            runner.bindTooltip(json_result.marker1.currentPosition["timestamp"], {permanent: false, className: "my-label", offset: [0, 0] });
+            runner.addTo(mymap);
+
+            
+
+            line1 = L.polyline(json_result.marker1.track, {color: 'red'}).addTo(mymap);
+            line2 = L.polyline(json_result.tracks.track1, {color: 'blue'}).addTo(mymap);
+        });
+
+       // var timer=setInterval(update,5000); */
+       var trackname1='riefensbeek'; 
+        $.ajax({
+            type: "POST",
+            url: "get_config.php",
+            data: {},
+            dataType:'JSON', 
+            success: function(response){
+                console.log(response);
+                if (typeof response["default_track"] !== 'undefined') {
+                    trackname1=response["default_track"];
+                    console.log(trackname1);
+                    populateMap();
+                }
+            },
+            error: function(xhr, status, error){      
+                console.log("AJAX Error get_config.php");
+                populateMap();
+            }
+        });
+    </script>
+</body>
+</html>

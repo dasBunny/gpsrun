@@ -1,0 +1,10 @@
+
+*.gpx
+*.csv
+*.kml
+db_login.txt
+login.php
+parse_csv_coords.py
+login.js
+http-handler/db_login.py
+.vscode/settings.json
