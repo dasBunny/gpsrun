@@ -87,10 +87,10 @@
 </head>
 <body>
     <ul class="top">
-        <li class="top"><a class="active" href="mmr.html">MMR</a></li>
-        <li class="top"><a href="wl.html">W/L</a></li>
-        <li class="top"><a href="kd.html">K/D</a></li>
-        <li class="top" style="float:right"><button class="openbtn" onclick="openNav()">☰ Sidebar</button></li>
+        <li class="top"><a class="active" href="mmr.html">Map</a></li>
+        <li class="top"><a href="admin_panel.html">Admin panel</a></li>
+        <li class="top"><a href="about.html">About</a></li>
+        <li class="top" style="float:right"><button class="openbtn" onclick="openNav()">☰ Map settings</button></li>
     </ul>
     <div id="mapid" style="height: 95vh; width: 100vw; top: 5vh"></div>
     <div id="mySidebar" class="sidebar">
@@ -98,10 +98,7 @@
         <a href="#">Services</a>
         <a href="#">Marker 1</a>
         <a><select id="select1" name="select1">
-            <option>Volvo</option>
-            <option value="saab">Saab</option>
-            <option value="mercedes">Mercedes</option>
-            <option value="audi">Audi</option>
+            <option>Loading...</option>
         </select> <button onclick="update1()">GO</button></a>
 
     </div>
@@ -201,7 +198,7 @@
 
         var runner_blue = L.icon({
         iconUrl: 'laeufer.png',
-        iconSize:     [38, 38], // size of the 
+        iconSize:     [38, 38], // size of the icon
        // shadowSize:   [50, 64], // size of the shadow
        // iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
        // shadowAnchor: [4, 62],  // the same for the shadow

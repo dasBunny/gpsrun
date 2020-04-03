@@ -71,25 +71,44 @@
         }
         </style>
 </head>
-<body body bgcolor="#333232">
+<body body bgcolor="#D1D1D1">
     <ul class="top">
         <li class="top"><a href="index.html">Map</a></li>
         <li class="top"><a class="active" href="admin_panel.html">Admin panel</a></li>
+        <li class="top"><a href="about.html">About</a></li>
         <li class="top" style="float:right"><a fflohref="#about">Dev</a></li>
       </ul>
     <div style="margin-top: 10vh">
-        <h1>Select default track</h1>
+        <h1>Standardtrack auswählen</h1>
+        <p>Hier kannst du den Track auswählen, der jedem Besucher standardmäßig auf der Karte angezeigt wird.</p>
         <select id="select1" name="select1">
             <option>Options not loaded yet...</option>
         </select> <button class="button" onclick="setTrack()">SET TRACK</button>
-    
+        <p id="return1"> </p>
     </div>
-    
+    <div>
+        <h1>Gerät mit Track verknüpfen</h1>
+        <p>Hier kannst du auswählen, auf welchen Track ein Gerät speichern soll.</p>
+    </div>
+    <div>
+        <h1>Neuen Track erstellen</h1>
+        <p>Hier kannst du neue Tracks hinzufügen, die du danach Geräten zuweisen kannst.</p>
+    </div>
     <script>
         function setTrack(){
             var e = document.getElementById("select1");
             trackname1 = e.options[e.selectedIndex].value;
             console.log(trackname1);
+            $.ajax({
+                type: "POST",
+                url: "set_default.php",
+                data: {trackname: trackname1},
+                dataType:'JSON', 
+                success: function(){
+                    document.getElementById("return1").style.color = "green";
+                    document.getElementById("return1").innerHTML="Sucess!";
+                }       
+            });
         }
         function populateSelectMenu() {
             console.log("populating");
