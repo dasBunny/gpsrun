@@ -3,50 +3,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body {
-  font-family: Arial, 
-  Helvetica, sans-serif;
-}
-ul.top {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: rgb(41, 45, 48);
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 5vh;
-  z-index: 999
-}
-.top li a {
-  float: left;
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-family:georgia,garamond,serif;
-  font-size:16px;
-  font-style:italic;
-}
-li a:hover:not(.active) {
-   background-color: #9E9E9E;
-}
-form {
-  border: 3px solid #9C9C9C;
-  width: 30vw;
-  margin-left: 35vw;
-  margin-top: 20vh;
-  }
+body {font-family: Arial, Helvetica, sans-serif;}
+form {border: 3px solid #f1f1f1;}
 
 input[type=text], input[type=password] {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
   display: inline-block;
-  border: 1px solid #9C9C9C;
+  border: 1px solid #ccc;
   box-sizing: border-box;
 }
 
@@ -57,7 +22,7 @@ button {
   margin: 8px 0;
   border: none;
   cursor: pointer;
-  width: 100%;                     
+  width: 100%;
 }
 
 button:hover {
@@ -92,18 +57,15 @@ span.psw {
 }
 </style>
 </head>
-<body bgcolor="#D1D1D1">
-  <ul class="top">
-    <li class="top"><a class="active" href="">Map</a></li>
-    <li class="top"><a href="admin_panel.html">Admin panel</a></li>
-    <li class="top"><a href="about.html">About</a></li>
-</ul>
-
-<form action="login.php" method="post">
-  <div class="container">
+<body>
     <h2>Log in to make changes</h2>
+
+    <form action="/login.php" method="post">
+  
+      <div class="container">
         <label for="uname"><b>Username</b></label>
         <input type="text" placeholder="Enter Username" name="uname" required>
+    
         <label for="psw"><b>Password</b></label>
         <input type="password" placeholder="Enter Password" name="psw" required>
             

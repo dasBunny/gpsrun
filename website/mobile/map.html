@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>GPS Staffelstab</title>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
@@ -16,6 +17,10 @@
         body {
             margin: 0;
             padding: 0;
+        }
+        hover_button {
+            z-index: 999;
+            right: 0;
         }
         .sidebar {
             height: 95vh;
@@ -65,9 +70,12 @@
             cursor: pointer;
             background-color: #111;
             color: white;
-            padding: 10px 15px;
-            border: none;
-            width: 250px;
+            padding: 10px 10px;
+            border-radius: 50px ;
+            height: 100px ;
+            width: 100px ;
+            font-size: 2em ;
+            z-index: 999;
         }
         .top li a {
             float: left;
@@ -90,9 +98,9 @@
         <li class="top"><a class="active" href="">Map</a></li>
         <li class="top"><a href="admin_panel.html">Admin panel</a></li>
         <li class="top"><a href="about.html">About</a></li>
-        <li class="top" style="float:right"><button class="openbtn" onclick="openNav()">☰ Map settings</button></li>
+        <li class="top" style="float:right"></li>
     </ul>
-    <div id="mapid" style="height: 95vh; width: 100vw; top: 5vh"></div>
+    <div id="mapid" style="height: 0vh; width: 100vw; top: 5vh; z-index: 400;"></div>
     <div id="mySidebar" class="sidebar">
         <a href="#">About</a>
         <a href="#">Services</a>
@@ -101,21 +109,8 @@
             <option>Loading...</option>
         </select> <button onclick="update1()">GO</button></a>
 
-    </div>
+    <button class="openbtn" onclick="openNav()">☰ Map settings</button>
     <script>
-        function calcuateLength(line){
-            var length=0.0;
-            var previousPoint = 0;
-            line.forEach((latLng)=>{
-                if (previousPoint) {
-                    length = length + previousPoint.distanceTo(latLng);
-                }
-                previousPoint = latLng;
-            })
-        length = length/1000;
-        return Math.round(length*1000)/1000;
-        }
-
         function update1(){
             var e = document.getElementById("select1");
             trackname1 = e.options[e.selectedIndex].value;
@@ -163,10 +158,11 @@
                 dataType:'JSON', 
                 success: function(response){
                     console.log(response);
-                    console.log(response.track[1]);
-                    line3.setLatLngs(response.track);
-                    runner_2.setLatLng(L.latLng(parseFloat(response.marker["lat"]), parseFloat(response.marker["long"])));
-                    runner_2.bindTooltip(response.marker["timestamp"], {permanent: false, className: "my-label", offset: [0, 0] });
+                    json_result = JSON.parse(JSON.stringify(response));
+                    console.log(json_result.marker["lat"]);
+                    line3.setLatLngs(json_result.track);
+                    runner_2.setLatLng(L.latLng(parseFloat(json_result.marker["lat"]), parseFloat(json_result.marker["long"])));
+                    runner_2.bindTooltip(json_result.marker["timestamp"], {permanent: false, className: "my-label", offset: [0, 0] });
                     mymap.fitBounds(line3.getBounds());
                 }       
             });
@@ -185,9 +181,9 @@
                         console.log(json_result.marker["lat"]); 
                         runner_2 = L.marker(L.latLng(parseFloat(json_result.marker["lat"]), 
                     parseFloat(json_result.marker["long"])),{icon: runner_black, riseOnHover: true});
+                    runner_2.bindTooltip(json_result.marker["timestamp"], {permanent: false, className: "my-label", offset: [0, 0] });
                     runner_2.addTo(mymap);
                     line3 = L.polyline(json_result.track, {color: 'orange'}).addTo(mymap);
-                    runner_2.bindTooltip(json_result.marker["timestamp"]+"<br>"+calcuateLength(line3.getLatLngs())+"km", {permanent: false, className: "my-label", offset: [0, 0] });
                     mymap.fitBounds(line3.getBounds());
                 }
             });
