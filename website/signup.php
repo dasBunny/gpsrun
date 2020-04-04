@@ -94,28 +94,29 @@ span.psw {
 </head>
 <body bgcolor="#D1D1D1">
   <ul class="top">
-    <li class="top"><a class="active" href="">Map</a></li>
-    <li class="top"><a href="admin_panel.html">Admin panel</a></li>
+    <li class="top"><a href="map.html">Map</a></li>
+    <li class="top"><a href="admin_panel.php">Admin panel</a></li>
     <li class="top"><a href="about.html">About</a></li>
 </ul>
 
-<form action="login.php" method="post">
+<form action="signup_handler.php" method="post">
   <div class="container">
     <h2>Log in to make changes</h2>
-        <label for="uname"><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="uname" required>
+        <label for="username"><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" name="username" required>
         <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="psw" required>
-            
-        <button type="submit">Login</button>
+        <input type="password" placeholder="Enter Password" name="password" required>
+        <label for="psw"><b>Repeat Password</b></label>
+        <input type="password" placeholder="Repeat Password" name="password_repeat" required>
+        <button type="submit" name="submit">Sign up</button>
         <label>
           <input type="checkbox" checked="checked" name="remember"> Remember me
         </label>
       </div>
     
       <div class="container" style="background-color:#f1f1f1">
-        <button type="button" class="cancelbtn">Cancel</button>
-        <span class="psw">Forgot <a href="#">password?</a></span>
+        <button type="button" class="cancelbtn" href="map.html">Cancel</button>
+        <span class="psw"><a href="#">Privacy policy</a></span>
       </div>
     </form>
     

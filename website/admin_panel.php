@@ -1,3 +1,12 @@
+<?php
+session_start();
+if(isset($_SESSION['username'])){
+}
+else{
+    header("Location: login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
@@ -24,7 +33,8 @@
                 border-radius: .25em; 
                 padding-bottom:10px; 
                   
-            } 
+            }
+
         .button {
           position: relative;
           background-color: #4CAF50;
@@ -101,9 +111,13 @@
 <body bgcolor="#D1D1D1">
     <ul class="top">
         <li class="top"><a href="map.html">Map</a></li>
-        <li class="top"><a class="active" href="admin_panel.html">Admin panel</a></li>
+        <li class="top"><a class="active" href="admin_panel.php">Admin panel</a></li>
         <li class="top"><a href="about.html">About</a></li>
-        <li class="top" style="float:right"><a fflohref="#about">Dev</a></li>
+        <li class="top" style="float:right"><a>
+            <form action="logout.php" method="post">
+                <button class="logoutbutton" type="submit" name="logout-submit">Logout</button>
+            </form>
+        </a></li>
       </ul>
     <div style="margin-top: 10vh">
         <h1>Standardtrack auswählen</h1>
