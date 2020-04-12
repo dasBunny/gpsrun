@@ -175,20 +175,20 @@
         function populateMap() {
             console.log(trackname1);
             $.ajax({
-                    type: "POST",
-                    url: "get_coords.php",
-                    data: {trackname: trackname1},
-                    dataType:'JSON', 
-                    success: function(response){
-                        console.log(response);
-                        json_result = JSON.parse(JSON.stringify(response));
-                        console.log(json_result.marker["lat"]); 
-                        runner_2 = L.marker(L.latLng(parseFloat(json_result.marker["lat"]), 
-                    parseFloat(json_result.marker["long"])),{icon: runner_black, riseOnHover: true});
+                type: "POST",
+                url: "get_coords.php",
+                data: {trackname: trackname1},
+                dataType:'JSON', 
+                success: function(response){
+                    console.log(response);
+                    json_result = JSON.parse(JSON.stringify(response));
+                    console.log(json_result.marker["lat"]); 
+                    runner_2 = L.marker(L.latLng(parseFloat(json_result.marker["lat"]), parseFloat(json_result.marker["long"])),{icon: runner_black, riseOnHover: true});
                     runner_2.addTo(mymap);
+                    preview_line = L.polyline(json_result.preview, {color: 'gray', dashArray: '20, 20'}).addTo(mymap);
                     line3 = L.polyline(json_result.track, {color: 'orange'}).addTo(mymap);
                     runner_2.bindTooltip(json_result.marker["timestamp"]+"<br>"+calcuateLength(line3.getLatLngs())+"km", {permanent: false, className: "my-label", offset: [0, 0] });
-                    mymap.fitBounds(line3.getBounds());
+                    mymap.fitBounds(preview_line.getBounds());
                 }
             });
         }

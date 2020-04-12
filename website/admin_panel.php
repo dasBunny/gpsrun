@@ -130,38 +130,47 @@ else{
                     </select>
                 </th>
                 <th>
-                    <button class="button" onclick="setTrack()">SET TRACK</button>
+                    <button class="button" onclick="setDefaultTrack()">SET TRACK</button>
                 </th>
             </tr>
         </table>        
         <p id="return1"> </p>
     </div>
     <div>
-        <h1>Gerät mit Track verknüpfen</h1>
-        <p>Hier kannst du auswählen, auf welchen Track ein Gerät speichern soll.</p>
-        <h2>Bestehenden Track verwenden</h2>
+        <h1>Vorschautrack auswählen</h1>
+        <p>Hier kannst du den Track auswählen, der jedem Besucher gestrichelt im Hintergrund auf der Karte angezeigt wird.</p>
         <table style="width:300px">
             <tr>
                 <th> 
-                    <select id="device1" name="device1">
+                    <select id="select_prev" name="select_prev">
                         <option>Options not loaded yet...</option>
                     </select>
                 </th>
                 <th>
-                    <input type="text" id="fname" name="fname">
-                </th>
-                <th>
-                    <button class="button" onclick="setTrack()">SET TRACK</button>
+                    <button class="button" onclick="setPreviewTrack()">SET TRACK</button>
                 </th>
             </tr>
         </table>        
-        <h2>Neuen Track anlegen</h2>
+        <p id="return_prev"> </p>
     </div>
     <div>
+        <h1>Gerät mit Track verknüpfen</h1>
+        <p>Hier kannst du auswählen, auf welchen Track ein Gerät speichern soll.</p>
+        <h2>Bestehenden Track verwenden</h2>
         <table style="width:500px">
             <tr>
+                <th>
+                    Gerätename
+                </th>
+                <th>
+                    Trackname
+                </th>
+                <th>
+                </th>
+            </tr>
+            <tr>
                 <th> 
-                    <select id="device2" name="track2">
+                    <select id="device2" name="device2">
                         <option>Options not loaded yet...</option>
                     </select>
                 </th>
@@ -171,12 +180,66 @@ else{
                     </select>
                 </th>
                 <th>
-                    <button class="button" onclick="setTrack()">SET TRACK</button>
+                    <button class="button" onclick="linkOldTrack()">SET TRACK</button>
                 </th>
             </tr>
         </table>
+        <p id="return2"> </p>
+        <h2>Neuen Track anlegen</h2>
+    </div>
+    <div>
+        <table style="width:300px">
+            <tr>
+                <th>
+                    Gerätename
+                </th>
+                <th>
+                    Trackname
+                </th>
+                <th>
+                </th>
+            </tr>
+            <tr>
+                <td> 
+                    <select id="device1" name="device1">
+                        <option>Options not loaded yet...</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" id="fname" name="fname">
+                </td>
+                <td>
+                    <button class="button" onclick="linkNewTrack()">SET TRACK</button>
+                </td>
+            </tr>
+        </table>    
+        <p id="return3"> </p>
     <script>
-        function setTrack(){
+        function linkOldTrack(){
+            var e = document.getElementById("track2");
+            trackname1 = e.options[e.selectedIndex].value;
+            linkDevice("device2",trackname1);
+            console.log(trackname1);
+        }
+        function linkDevice(device_selector,trackname){
+            var e = document.getElementById(device_selector);
+            devicename = e.options[e.selectedIndex].value;
+            console.log(devicename);
+            console.log(trackname1);
+            $.ajax({
+                type: "POST",
+                url: "set_devTrackLink.php",
+                data: {trackname: trackname, device: devicename},
+                dataType:'JSON', 
+                success: function(response){
+                    if(response="sucess"){
+                        document.getElementById("return2").style.color = "green";
+                        document.getElementById("return2").innerHTML="Sucess!";
+                    }
+                }       
+            });
+        }
+        function setDefaultTrack(){
             var e = document.getElementById("select1");
             trackname1 = e.options[e.selectedIndex].value;
             console.log(trackname1);
@@ -188,10 +251,34 @@ else{
                 success: function(){
                     document.getElementById("return1").style.color = "green";
                     document.getElementById("return1").innerHTML="Sucess!";
-                }       
+                },
+                error: function(error){
+                    document.getElementById("return1").style.color = "red";
+                    document.getElementById("return1").innerHTML="Failure!";
+                }           
+            });
+        }
+        function setPreviewTrack(){
+            var e = document.getElementById("select_prev");
+            trackname1 = e.options[e.selectedIndex].value;
+            console.log(trackname1);
+            $.ajax({
+                type: "POST",
+                url: "set_preview.php",
+                data: {trackname: trackname1},
+                dataType:'JSON', 
+                success: function(){
+                    document.getElementById("return_prev").style.color = "green";
+                    document.getElementById("return_prev").innerHTML="Sucess!";
+                },
+                error: function(error){
+                    document.getElementById("return_prev").style.color = "red";
+                    document.getElementById("return_prev").innerHTML="Failure!";
+                }    
             });
         }
         function populateSelectMenu() {
+            var selects = ['select1','track2','select_prev'];
             console.log("populating");
             $.ajax({
                 type: "POST",
@@ -200,21 +287,52 @@ else{
                 dataType:'JSON', 
                 success: function(response){
                     console.log(response);
-                    var select = document.getElementById('select1'), i = 0, il=response.length, length = select.options.length;
-                    for (j = length-1; j >= 0; j--) {
-                        select.options[j] = null;
-                    }
-                    for(;i<il;i++){
-                        console.log(response[i]);
-                        var opt = document.createElement("option");
-                        opt.value=response[i];
-                        opt.innerHTML = response[i];
-                        select.appendChild(opt);
-                    }
+                    selects.forEach(element => {
+                        console.log(element);
+                        var select = document.getElementById(element), i = 0, il=response.length, length = select.options.length;
+                        for (j = length-1; j >= 0; j--) {
+                            select.options[j] = null;
+                        }   
+                        for(;i<il;i++){
+                            console.log(response[i]);
+                            var opt = document.createElement("option");
+                            opt.value=response[i];
+                            opt.innerHTML = response[i];
+                            select.appendChild(opt);
+                        }
+                    })
                 }
             });
         }
 
+        function populateDeviceMenu() {
+            var selects = ['device1','device2'];
+            console.log("populating");
+            $.ajax({
+                type: "POST",
+                url: "get_devices.php",
+                data: {},
+                dataType:'JSON', 
+                success: function(response){
+                    console.log(response);
+                    selects.forEach(element => {
+                        console.log(element);
+                        var select = document.getElementById(element), i = 0, il=response.length, length = select.options.length;
+                        for (j = length-1; j >= 0; j--) {
+                            select.options[j] = null;
+                        }   
+                        for(;i<il;i++){
+                            console.log(response[i]);
+                            var opt = document.createElement("option");
+                            opt.value=response[i];
+                            opt.innerHTML = response[i];
+                            select.appendChild(opt);
+                        }
+                    })
+                }
+            });
+        }
         populateSelectMenu();
+        populateDeviceMenu();
     </script>
 </body>

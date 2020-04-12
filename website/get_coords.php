@@ -15,7 +15,43 @@ if($mysqli->connect_error) {
     exit('Could not connect');
 }
 
+$preview_trackname = "beta";
 $stmt = mysqli_stmt_init($mysqli);
+$query="SELECT value FROM config where property='preview_track' LIMIT 1";
+if(!mysqli_stmt_prepare($stmt, $query)){
+  echo "fail";
+} else {
+  if (mysqli_stmt_execute($stmt)) {
+    $result=mysqli_stmt_get_result($stmt);
+    $num=$result->num_rows;
+    if ($num == 1) {
+      $row = $result->fetch_assoc();
+      $preview_trackname = $row['value'];
+    }
+    else echo "fail";
+  }
+  else echo "fail";
+}
+$query="SELECT * FROM coords where name=? order by timestamp asc LIMIT 1000";
+if(!mysqli_stmt_prepare($stmt, $query)){
+  echo "fail";
+} else {
+  mysqli_stmt_bind_param($stmt,"s",$preview_trackname);
+  if (mysqli_stmt_execute($stmt)) {
+    $result=mysqli_stmt_get_result($stmt);
+    $num=$result->num_rows;
+    if ($num > 0) {
+      // output data of each row
+      $track = array();
+      for($i=0; $i<$num; $i++) {
+        $row = $result->fetch_assoc();
+        $pos = array($row["lat"],$row["lng"]);
+        array_push($track,$pos);
+      }
+      $coords->preview=$track;
+    }
+  }
+}
 $query="SELECT * FROM coords where name=? order by timestamp asc LIMIT 1000";
 if(!mysqli_stmt_prepare($stmt, $query)){
   echo "fail";
