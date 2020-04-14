@@ -2,7 +2,7 @@
 *.gpx
 *.csv
 *.kml
-*.ino
+definitions.h
 db_login.txt
 parse_csv_coords.py
 login.js
