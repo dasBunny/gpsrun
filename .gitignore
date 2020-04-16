@@ -10,3 +10,4 @@ http-handler/db_login.py
 .vscode/settings.json
 __pycache__
 website/connect_db.php
+all.code-workspace
