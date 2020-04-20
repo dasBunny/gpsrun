@@ -1,5 +1,5 @@
 import http.server
-from http.server import BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler,HTTPServer
 import socketserver
 import logging
 import json
@@ -33,7 +33,17 @@ class myHandler(BaseHTTPRequestHandler):
                 val = i.split("=")
                 data[val[0]]=val[1]
         print(data)
-        self.send_response(204)
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        output = "<html><head><title>Sucess</title></head>"
+        self.wfile.write(output.encode(encoding='utf_8'))
+        output = "<body><p>Server reached.</p>"
+        self.wfile.write(output.encode(encoding='utf_8'))
+        output = "<p>You accessed path: %s</p>" % self.path
+        self.wfile.write(output.encode(encoding='utf_8'))
+        output = "</body></html>"
+        self.wfile.write(output.encode(encoding='utf_8'))
         if "lat" in data and "lng" in data and "token" in data and "id" in data:
             logtofile("Matching parameters, checking token.")
             sql="""SELECT id,token,trackname from devices where id = %s"""
