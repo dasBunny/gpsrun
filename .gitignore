@@ -11,3 +11,16 @@ http-handler/db_login.py
 __pycache__
 website/connect_db.php
 all.code-workspace
+microcontroller/TinyGPSPlus/src/TinyGPS++.cpp
+microcontroller/TinyGPSPlus/examples/BasicExample/BasicExample.ino
+microcontroller/TinyGPSPlus/examples/DeviceExample/DeviceExample.ino
+microcontroller/TinyGPSPlus/examples/FullExample/FullExample.ino
+microcontroller/TinyGPSPlus/examples/KitchenSink/KitchenSink.ino
+microcontroller/TinyGPSPlus/examples/SatElevTracker/sample_satellite_elevation_log.txt
+microcontroller/TinyGPSPlus/examples/SatElevTracker/SatElevTracker.ino
+microcontroller/TinyGPSPlus/examples/SatelliteTracker/SatelliteTracker.ino
+microcontroller/TinyGPSPlus/examples/UsingCustomFields/UsingCustomFields.ino
+microcontroller/TinyGPSPlus/keywords.txt
+microcontroller/TinyGPSPlus/library.json
+microcontroller/TinyGPSPlus/library.properties
+microcontroller/TinyGPSPlus/README.md
