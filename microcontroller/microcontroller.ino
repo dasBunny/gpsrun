@@ -117,7 +117,7 @@ void loop()
             double lat_old = (double) flat;                                     //update the old waypoint
             double lng_old = (double) flon;
             EEPROM.put(eeAddress, lat_old);                                     //write old waypoint to EEPROM
-            EEPROM.put((eeAddress + sizeof(double)),lng_old)
+            EEPROM.put((eeAddress + sizeof(double)),lng_old);
 
   
             //Sending procedure--------------------
@@ -131,7 +131,7 @@ void loop()
                 
                 EEPROM.begin(512); //Initialize EEPROM
                 int StackCounter = 0;
-                EEPROM.get(eeAddressStackCounter,StackCounter)    //read EEPROM eeAddressStackCounter if there are any waypoints on stack
+                EEPROM.get(eeAddressStackCounter,StackCounter);    //read EEPROM eeAddressStackCounter if there are any waypoints on stack
                 while(StackCounter > 0)                           //jump in while loop if there any waypoints on stack
                   {
                   EEPROM.begin(512);                              //Initialize EEPROM
@@ -148,12 +148,12 @@ void loop()
                       }
 
                     else
-                    {
-                    println("sending waypoints from stack failed, trying it next time")
-                    break;                                                                      //jumping out of while loop because there is a failed try
-                    }
+                      {
+                      println("sending waypoints from stack failed, trying it next time");
+                      break;                                                                      //jumping out of while loop because there is a failed try
+                      }
                   }
-                EEPROM.put(eeAddressStackCounter,StackCounter)                                  //write updated StackCounter to EEPROM
+                EEPROM.put(eeAddressStackCounter,StackCounter);                                  //write updated StackCounter to EEPROM
               }
 
       
@@ -166,19 +166,31 @@ void loop()
               //routine for saving failed sending points
               Serial.print("Due to the error in sending procedure this waypoint is saved to the EEPROM of the ESP8266");
               EEPROM.begin(512);
-              EEPROM.put((eeAddressStack + ((eeAddressStackCounter-1)*sizeof(double)) ), lat_old);                                     //write waypoint to EEPROM to send it later if internet connection is available
-              EEPROM.put((eeAddressStack + sizeof(double) + ((eeAddressStackCounter-1)*sizeof(double)) ),lng_old)
+              int StackCounter = 0;
+              EEPROM.get(eeAddressStackCounter,StackCounter);
+
+              if(StackCounter<=(eeAddressMax-(2*sizeof(double))))                                                                          //check if overflow
+                {
+                  EEPROM.put((eeAddressStack + ((eeAddressStackCounter-1)*sizeof(double)) ), lat_old);                                     //write waypoint to EEPROM to send it later if internet connection is available
+                  EEPROM.put((eeAddressStack + sizeof(double) + ((eeAddressStackCounter-1)*sizeof(double)) ),lng_old);
+                  Stackcounter++;
+                }
+
+              else
+                {
+                Serial.println("Prevented Overflow in EEPROM, so no more storage is available!!!!");  
+                }
+              EEPROM.put(eeAddressStackCounter, StackCounter);         
+
               }
      
-
             }
 
           else
-          {
-          Serial.println("distance between waypoints less than 50m -> no sending procedure");
-          }
+            {
+            Serial.println("distance between waypoints less than 50m -> no sending procedure");
+            }
 
-         
             
       }
 
