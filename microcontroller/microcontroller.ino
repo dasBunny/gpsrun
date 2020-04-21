@@ -2,6 +2,7 @@
 #include <TinyGPS++.h>
 #include <ESP8266WiFi.h>
 #include "definitions.h"
+#include <EEPROM.h>
 
 
 /* 
@@ -11,23 +12,32 @@
   filter  
   lte 
 */
-  //HTTP------------------------
+  //CONFIG---------------------------------------------------------------------------------------------------------------------------------------------------
+    //EEPROM address--------------
+      const int eeAddress = 0;                                    //start adress of eeprom last waypoint storage
+      const int eeAddressStackCounter = sizeof(int);              //start address of the counter which states the amount of waypoints on stack
+      const int eeAddressStack = ((2*sizeof(double))+sieof(int)); //start address of the stack
+      const int eeAddressMax = 512;                               //this is the max address of the EEPROM on the ESP8266
+
+    //HTTP------------------------
+      //as these are sensible information, they are excluded from the git upload! --> gitignore
+
+    //Sleep
+      const int SleepTimeS = 120;                                 //deep sleep time in seconds
+      const bool wifi_enable = true;                              //states if wifi is enabled or disabled after sleep: enable = true, disable = false
 
 
-  //Sleep
-  const int SleepTimeS = 120;
-  const bool wifi_enable = true; //enable = true, disable = false
 
+    //GPS------------------------------
+      static const int RXPin = 5, TXPin = 4;                      //software serial pins for gps communication
+      static const uint32_t GPSBaud = 9600;                       //Baud rate for gps communication
+      int gps_failcounter = 0;                                    //Counter for failed GPS tries
 
+      TinyGPSPlus gps;                                            //The TinyGPS++ object
+      SoftwareSerial ss(RXPin, TXPin);                            //starting the serial connection to the GPS device
 
-  //GPS------------------------------
-  static const int RXPin = 5, TXPin = 4;
-  static const uint32_t GPSBaud = 9600;
-  float lat_old, lng_old;
-
-  TinyGPSPlus gps; // The TinyGPS++ object
-  SoftwareSerial ss(RXPin, TXPin); // serial connection to the GPS device
-
+    //Cellular------------------------
+    
 
 
 
@@ -83,6 +93,7 @@ void loop()
   
   float flat, flon;
   bool send_succesful = false;
+  
 
   while (ss.available() > 0)
     {
@@ -94,52 +105,98 @@ void loop()
         {
     
   
-        //GPS--------------
+        //GPS----------------------------------
         Serial.println("Valid GPS position");
         flat = gps.location.lat();
         flon = gps.location.lng();
 
 
-        if(filter_gps(flat, flon, lat_old, lng_old))
-          {
-          
-          lat_old = flat; //update the old waypoint
-          lng_old = flon;
+          if(filter_gps(flat, flon))
+            {
+            EEPROM.begin(512);
+            double lat_old = (double) flat;                                     //update the old waypoint
+            double lng_old = (double) flon;
+            EEPROM.put(eeAddress, lat_old);                                     //write old waypoint to EEPROM
+            EEPROM.put((eeAddress + sizeof(double)),lng_old)
 
-        
   
-  
-            //HTTP----------------
+            //Sending procedure--------------------
   
             if(wifi_send(flat, flon, host, httpPort))
-            { 
-             Serial.println("send succesful");
-             send_succesful = true;
-            }
+              { 
+              Serial.println("send succesful");
+              send_succesful = true;
+
+                //routine for sending the queue
+                
+                EEPROM.begin(512); //Initialize EEPROM
+                int StackCounter = 0;
+                EEPROM.get(eeAddressStackCounter,StackCounter)    //read EEPROM eeAddressStackCounter if there are any waypoints on stack
+                while(StackCounter > 0)                           //jump in while loop if there any waypoints on stack
+                  {
+                  EEPROM.begin(512);                              //Initialize EEPROM
+                  double lat_tmp;
+                  double lng_tmp;
+                  EEPROM.get((eeAddress + ((eeAddressStackCounter-1)*sizeof(double))), lat_tmp);                        //read last waypoint from stack
+                  EEPROM.get((eeAddressStack + sizeof(double) + ((eeAddressStackCounter-1)*sizeof(double)) ),lng_tmp);
+
+                    if(wifi_send(lat_tmp, lng_tmp, host, httpPort))
+                      { 
+                      Serial.print("Send last waypoint from stack, reducing stack counter to:");
+                      StackCounter--;
+                      Serial.println(StackCounter);
+                      }
+
+                    else
+                    {
+                    println("sending waypoints from stack failed, trying it next time")
+                    break;                                                                      //jumping out of while loop because there is a failed try
+                    }
+                  }
+                EEPROM.put(eeAddressStackCounter,StackCounter)                                  //write updated StackCounter to EEPROM
+              }
+
       
             else 
               {
               Serial.println("error in sending procedure");
-              send_succesful = true; //This should be false, but there is no answer routine from server yet
+              send_succesful = true;                                                          //This should be false, but there is no answer routine from server yet!!!!!!!!!!!!!
+              
+              
+              //routine for saving failed sending points
+              Serial.print("Due to the error in sending procedure this waypoint is saved to the EEPROM of the ESP8266");
+              EEPROM.begin(512);
+              EEPROM.put((eeAddressStack + ((eeAddressStackCounter-1)*sizeof(double)) ), lat_old);                                     //write waypoint to EEPROM to send it later if internet connection is available
+              EEPROM.put((eeAddressStack + sizeof(double) + ((eeAddressStackCounter-1)*sizeof(double)) ),lng_old)
               }
      
 
             }
 
-            else
-         {
+          else
+          {
           Serial.println("distance between waypoints less than 50m -> no sending procedure");
-         }
+          }
 
          
             
-         }
+      }
 
-         else 
-         {
-         Serial.println("waiting for GPS connection");
-         delay(1000); //wait 1 second for next try if GPS is available
-         }
+      else 
+      {
+
+      if(gps_failcounter>5)                                                         //If the GPS failcounter is over 5 the device goes to sleep and tries again after sleep
+        {
+        Serial.println("Going to sleep, and try again later to get GPS Connection")
+        Sleep(SleepTimeS, wifi_enable); 
+        }
+
+      gps_failcounter ++;                                                           //count fail counter up
+      Serial.println("waiting for GPS connection");
+      Serial.print("GPS Failcounter is right now:");
+      Serial.println(gps_failcounter);
+      delay(1000);                                                                  //wait 1 second for next try if GPS is available
+      }
 
 
       }
@@ -147,7 +204,7 @@ void loop()
     }
     if(send_succesful == true)
     {
-     Serial.print("goto sleep for:");
+     Serial.print("go to sleep for:");
      Serial.println(SleepTimeS);
      Sleep(SleepTimeS, wifi_enable); 
     }

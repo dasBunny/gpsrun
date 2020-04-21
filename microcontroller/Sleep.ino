@@ -13,4 +13,13 @@ void Sleep(const int SleepTimeS, const bool wifi_enable) {
   
 }
 
-//deep sleep function, you can choice whether wifi should be enabled (wifi_enable = true) or disabled (wifi_enable = false) after wakeup.
+
+/*
+ * Parameter: -SleepTimeS:      deep sleep time in seconds
+ *            -wifi_enable:     defines whether wifi should be enabled or disabled after wakeup
+ *            
+ *            
+ *            
+ *  Return values:void        
+ *            
+ */

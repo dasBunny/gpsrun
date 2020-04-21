@@ -19,9 +19,9 @@ Serial.print("connecting to ");
     Serial.println("connection failed");
     return false; }
 
-//String url =  "/lat="+(String)flat+"/lng="+(String)flon+"/id="+DEV_ID/"TOKEN="+TOKEN; pfusch!
 
-    String url = "/";   //building url for http-get message
+
+    String url = "/";                                                                                                           //building url for http-get message
     url += "lat=";
     url += String(flat,6);
     url += "/lng=";
@@ -32,8 +32,8 @@ Serial.print("connecting to ");
     url += token;
 
     Serial.print("Requesting URL: ");
-    Serial.println(url); // This will send the request to the server
-    client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
+    Serial.println(url); 
+    client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");              // This will send the request to the server
     unsigned long timeout = millis();
     while (client.available() == 0) {
     if (millis() - timeout > 5000)
