@@ -1,4 +1,4 @@
-microcontroller/TinyGPSPlus/
+/microcontroller/TinyGPSPlus/
 *.gpx
 *.csv
 *.kml
