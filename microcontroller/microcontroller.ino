@@ -3,6 +3,7 @@
 #include <ESP8266WiFi.h>
 #include "definitions.h"
 #include <EEPROM.h>
+#include <string.h>
 
 
 /* 
@@ -34,11 +35,14 @@
       int gps_failcounter = 0;                                    //Counter for failed GPS tries
 
       TinyGPSPlus gps;                                            //The TinyGPS++ object
-      SoftwareSerial ss(RXPin, TXPin);                            //starting the serial connection to the GPS device
+      SoftwareSerial ss(RXPin, TXPin);                            //defining the serial connection to the GPS device
 
     //Cellular------------------------
-    
+      #define DEBUG 1                                             //set to debug mode
+      #define SIM800_TX_PIN D1                                    // TX pin of SIM800L               
+      #define SIM800_RX_PIN D2                                    // RX pin of SIM800L
 
+      SoftwareSerial serialSIM800(SIM800_TX_PIN,SIM800_RX_PIN);   //Software Serial for sim800
 
 
 
