@@ -20,3 +20,15 @@ INFO:root:[2020-04-20 23:29:26] Received GET request: /
 INFO:root:[2020-04-20 23:29:26] Missing parameters
 INFO:root:[2020-04-20 23:29:42] Received GET request: /test=352/35235
 INFO:root:[2020-04-20 23:29:42] Missing parameters
+INFO:root:[2020-05-27 01:26:03] Started on port 1949
+INFO:root:[2020-05-27 01:27:06] Received GET request: /lat=51.0/lng=9.0/token=1234/id=server/hour=2/min=44/sec=22/month=12/year=2009/day=12
+INFO:root:[2020-05-27 01:28:42] Started on port 1949
+INFO:root:[2020-05-27 01:28:48] Received GET request: /lat=51.0/lng=9.0/token=1234/id=server/hour=2/min=44/sec=22/month=12/year=2009/day=12
+INFO:root:[2020-05-27 01:28:48] Date was send: 2009-12-12 2:44:22
+INFO:root:[2020-05-27 01:28:48] Matching parameters, checking token.
+INFO:root:[2020-05-27 01:28:48] Token OK - Inserting data with trackname karren
+INFO:root:[2020-05-27 01:34:17] Started on port 1949
+INFO:root:[2020-05-27 01:34:22] Received GET request: /lat=51.0/lng=9.0/token=1234/id=server/hour=2/min=44/sec=22/month=12/year=2009/day=12
+INFO:root:[2020-05-27 01:34:22] Date was send: 2009-12-12 2:44:22
+INFO:root:[2020-05-27 01:34:22] Matching parameters, checking token.
+INFO:root:[2020-05-27 01:34:22] Token OK - Inserting data with trackname karren

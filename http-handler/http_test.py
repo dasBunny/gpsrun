@@ -44,6 +44,12 @@ class myHandler(BaseHTTPRequestHandler):
         self.wfile.write(output.encode(encoding='utf_8'))
         output = "</body></html>"
         self.wfile.write(output.encode(encoding='utf_8'))
+        if "hour" in data and "min" in data and "sec" in data and "day" in data and "month" in data and "year" in data:
+            datestring = "%s-%s-%s %s:%s:%s" % (data["year"],data["month"],data["day"],data["hour"],data["min"],data["sec"])
+            logtofile("Date was send: "+datestring)
+            recording_timestamp_flag = True
+        else:
+            recording_timestamp_flag = False
         if "lat" in data and "lng" in data and "token" in data and "id" in data:
             logtofile("Matching parameters, checking token.")
             sql="""SELECT id,token,trackname from devices where id = %s"""
@@ -54,8 +60,12 @@ class myHandler(BaseHTTPRequestHandler):
             print(token)
             if token==data["token"]:
                 logtofile("Token OK - Inserting data with trackname {}".format(trackname))
-                sql = "INSERT INTO coords (timestamp,lat,lng,name) VALUES (%s, %s, %s,%s)"
-                val = (time,data["lat"],data["lng"],trackname)
+                if recording_timestamp_flag:
+                    sql = "INSERT INTO coords (timestamp,lat,lng,name,recording_timestamp) VALUES (%s, %s, %s,%s,%s)"
+                    val = (time,data["lat"],data["lng"],trackname,datestring)
+                else:
+                    sql = "INSERT INTO coords (timestamp,lat,lng,name) VALUES (%s, %s, %s,%s)"
+                    val = (time,data["lat"],data["lng"],trackname)                    
                 mycursor.execute(sql, val)
                 mydb.commit()
             else:
