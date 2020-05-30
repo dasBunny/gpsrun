@@ -4,20 +4,16 @@
 #include "definitions.h"
 #include <EEPROM.h>
 #include <string.h>
+#include <stdarg.h>
+#include <stdlib.h>
 
 
-/* 
-  TODO: 
-  
-  anzeige
-  filter  
-  lte 
-*/
+
   //CONFIG---------------------------------------------------------------------------------------------------------------------------------------------------
     //EEPROM address--------------
       const int eeAddress = 0;                                    //start adress of eeprom last waypoint storage
       const int eeAddressStackCounter = sizeof(int);              //start address of the counter which states the amount of waypoints on stack
-      const int eeAddressStack = ((2*sizeof(double))+sieof(int)); //start address of the stack
+      const int eeAddressStack = ((2*sizeof(double))+sizeof(int)); //start address of the stack
       const int eeAddressMax = 512;                               //this is the max address of the EEPROM on the ESP8266
 
     //HTTP------------------------
@@ -25,28 +21,35 @@
 
     //Sleep
       const int SleepTimeS = 120;                                 //deep sleep time in seconds
-      const bool wifi_enable = true;                              //states if wifi is enabled or disabled after sleep: enable = true, disable = false
+      const bool wifi_enable = false;                              //states if wifi is enabled or disabled after sleep: enable = true, disable = false
 
 
 
     //GPS------------------------------
-      static const int RXPin = 5, TXPin = 4;                      //software serial pins for gps communication
-      static const uint32_t GPSBaud = 9600;                       //Baud rate for gps communication
+    //  static const int RXPin = 5, TXPin = 4;                      //software serial pins for gps communication
+    //  static const uint32_t GPSBaud = 9600;                       //Baud rate for gps communication
       int gps_failcounter = 0;                                    //Counter for failed GPS tries
-
+    //
       TinyGPSPlus gps;                                            //The TinyGPS++ object
-      SoftwareSerial ss(RXPin, TXPin);                            //defining the serial connection to the GPS device
+    //  SoftwareSerial ss(RXPin, TXPin);                            //defining the serial connection to the GPS device
 
-    //Cellular------------------------
+  
+      
+    //Modem-Interface----------------------
       #define DEBUG 1                                             //set to debug mode
-      #define SIM800_TX_PIN D1                                    // TX pin of SIM800L               
-      #define SIM800_RX_PIN D2                                    // RX pin of SIM800L
+      static const int RXPin = 5, TXPin = 4;                      //Software serial pins
+      static const uint32_t softBaud = 9600;                      //Baud rate for communication with module
 
-      SoftwareSerial serialSIM800(SIM800_TX_PIN,SIM800_RX_PIN);   //Software Serial for sim800
+      SoftwareSerial softSerial(RXPin, TXPin);                    //Software Serial for SimCom Modem
+
+      static const int PwrPin = 2;                                //Power Pin of the LTE module
+
+
+     
 
 
 
-  //Function prototypes-------------//function prototype because the Arduino IDE does not make it automatic
+  //Function prototypes-------------
 
   bool wifi_send(float flat, float flon, const char* host, const int httpPort); 
   void Sleep(const int SleepTimeS, const bool wifi_enable); 
@@ -59,92 +62,94 @@
   
 void setup()
 {
+  #ifdef DEBUG 
   delay(10000); //only for Debugging!
-  Serial.begin(115200);
-  
-  Serial.print("Testing serial connection to computer");
-  
-  ss.begin(GPSBaud); //Software Serial to GPS-Device
+  #endif
+   
 
-    //HTTP--------------------
-    Serial.println();
-    Serial.print("Connecting to ");
-    Serial.println(ssid);
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED)
-      {
-        delay(500);
-        Serial.print(".");
-      }
-      
-    Serial.println("");
-    Serial.println(F("WiFi connected"));
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
-    
+  Serial.begin(115200);      //open debug serial connection
+  
+  printSerial("\n**** BOOT ************************************************************************************************************");
+  
+  
+
+    //LTE--------------------
+    int retval = 0;                           //LTE return value
+    pinMode(4,OUTPUT);                        //Initialize Pin 4 as OUTPUT
+    softSerial.begin(softBaud);               //open SoftwareSerial connection to Simcom Board
+    delay(20);  
+    printSerial("-- Power Up SimCom Module");
+	  powerUpSimModule();
+    delay(3000);
+    printSerial("-- Init SimCom Module");
+	  retval = initSimModule();
+	  if (retval)
+	  {
+		  printSerial("ERROR initSimModule %d", retval);
+		  //exit -1;
+      Serial.println("Going to sleep, and try again later to Initialize LTE module");
+      Sleep(SleepTimeS, wifi_enable); 
+	  }
+
+  	printSerial("-- Get SimCom Module Info");  //Nur zum Testen interessant
+	  getSimInfo(); //dto
+  	printSerial("-- Init Sim7080 NB-Iot");
+	  setupSim7080NBIot1nce();
+  	activateAppNetwork(true);
+   checkSimConnectionStatus();
+   //activateAppNetwork(false);
 }
 
     
 //--------------------LOOP------------------------------------------
 
 
-  
-
-
 void loop()
 {
+  double lat;
+  double lon;
   
-  float flat, flon;
   bool send_succesful = false;
   
 
-  while (ss.available() > 0)
+  while (softSerial.available() > 0)
     {
       //Serial.println("SoftwareSerial connection successful, starting GPS read");
-      if(gps.encode(ss.read()))
+      if(getGpsPos(60.0))
       {
-       
-      if (gps.location.isValid())
-        {
-    
-  
-        //GPS----------------------------------
-        Serial.println("Valid GPS position");
-        flat = gps.location.lat();
-        flon = gps.location.lng();
+      lat = latConvert();
+      lon = lonConvert();
 
 
-          if(filter_gps(flat, flon))
+          if(filter_gps(lat, lon))
             {
             EEPROM.begin(512);
-            double lat_old = (double) flat;                                     //update the old waypoint
-            double lng_old = (double) flon;
+            double lat_old = lat;                                     //update the old waypoint
+            double lng_old = lon;
             EEPROM.put(eeAddress, lat_old);                                     //write old waypoint to EEPROM
             EEPROM.put((eeAddress + sizeof(double)),lng_old);
 
   
             //Sending procedure--------------------
-  
-            if(wifi_send(flat, flon, host, httpPort))
+
+            if(httpGetSim(lat, lon)==0)
               { 
               Serial.println("send succesful");
               send_succesful = true;
-
+            int StackCounter = 0;
                 //routine for sending the queue
                 
                 EEPROM.begin(512); //Initialize EEPROM
-                int StackCounter = 0;
+
                 EEPROM.get(eeAddressStackCounter,StackCounter);    //read EEPROM eeAddressStackCounter if there are any waypoints on stack
                 while(StackCounter > 0)                           //jump in while loop if there any waypoints on stack
                   {
-                  EEPROM.begin(512);                              //Initialize EEPROM
                   double lat_tmp;
                   double lng_tmp;
                   EEPROM.get((eeAddress + ((eeAddressStackCounter-1)*sizeof(double))), lat_tmp);                        //read last waypoint from stack
                   EEPROM.get((eeAddressStack + sizeof(double) + ((eeAddressStackCounter-1)*sizeof(double)) ),lng_tmp);
 
-                    if(wifi_send(lat_tmp, lng_tmp, host, httpPort))
+                    if(httpGetSim(lat_tmp, lng_tmp))
                       { 
                       Serial.print("Send last waypoint from stack, reducing stack counter to:");
                       StackCounter--;
@@ -153,18 +158,19 @@ void loop()
 
                     else
                       {
-                      println("sending waypoints from stack failed, trying it next time");
+                      Serial.println("sending waypoints from stack failed, trying it next time");
                       break;                                                                      //jumping out of while loop because there is a failed try
                       }
                   }
                 EEPROM.put(eeAddressStackCounter,StackCounter);                                  //write updated StackCounter to EEPROM
+                powerDownSimModule();                                                            //Power Down the sim module
               }
 
       
             else 
               {
               Serial.println("error in sending procedure");
-              send_succesful = true;                                                          //This should be false, but there is no answer routine from server yet!!!!!!!!!!!!!
+              send_succesful = false;                                                          //This should be false, but there is no answer routine from server yet!!!!!!!!!!!!!
               
               
               //routine for saving failed sending points
@@ -177,7 +183,7 @@ void loop()
                 {
                   EEPROM.put((eeAddressStack + ((eeAddressStackCounter-1)*sizeof(double)) ), lat_old);                                     //write waypoint to EEPROM to send it later if internet connection is available
                   EEPROM.put((eeAddressStack + sizeof(double) + ((eeAddressStackCounter-1)*sizeof(double)) ),lng_old);
-                  Stackcounter++;
+                  StackCounter++;
                 }
 
               else
@@ -203,7 +209,7 @@ void loop()
 
       if(gps_failcounter>5)                                                         //If the GPS failcounter is over 5 the device goes to sleep and tries again after sleep
         {
-        Serial.println("Going to sleep, and try again later to get GPS Connection")
+        Serial.println("Going to sleep, and try again later to get GPS Connection");
         Sleep(SleepTimeS, wifi_enable); 
         }
 
@@ -215,7 +221,7 @@ void loop()
       }
 
 
-      }
+      
   
     }
     if(send_succesful == true)
