@@ -116,12 +116,26 @@
                     runner_2.addTo(mymap);
                     preview_line = L.polyline(json_result.preview, {color: 'gray', dashArray: '20, 20'}).addTo(mymap);
                     line3 = L.polyline(json_result.track, {color: 'orange'}).addTo(mymap);
-                    runner_2.bindTooltip(json_result.marker["timestamp"]+"<br>"+calcuateLength(line3.getLatLngs())+"km", {permanent: false, className: "my-label", offset: [0, 0] });
+                    runner_2.bindTooltip("<b>Übermittlungszeitpunkt</b></br>"+json_result.marker["timestamp"]+"<br><b>Zurückgelegte Distanz</b></br>"+calcuateLength(line3.getLatLngs())+"km", {permanent: false, className: "my-label", offset: [0, 0] });
                     mymap.fitBounds(preview_line.getBounds());
+                    json_result.track.forEach(pointsTooltipHelper);
+                    points.forEach(pointsMapAdder);
+                    console.log(points);
                 }
             });
         }
-        
+
+        function pointsMapAdder(point){
+            point.addTo(mymap);
+        }
+
+        function pointsTooltipHelper(point){
+            temp_marker = L.marker(L.latLng(parseFloat(point[0]), parseFloat(point[1])),{opacity: 0,riseOnHover: true});
+            temp_marker.bindTooltip("<b>Übermittlungszeitpunkt</b></br>"+point[2], {permanent: false, className: "my-label", offset: [0, 0] });
+            points.push(temp_marker);
+        }
+
+        var points = [];
         var mymap = L.map('mapid').setView([50, 8.8], 7);
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZGFzYnVubnkiLCJhIjoiY2s3amdmNDRhMHQ0bDNrbzJwazd3eGFtMCJ9.NF3ZMkRlGqK08TK617teKw', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
