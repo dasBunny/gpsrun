@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdlib.h>
-
+#include <Ticker.h>
 
 
   //CONFIG---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -42,8 +42,23 @@
 
       SoftwareSerial softSerial(RXPin, TXPin);                    //Software Serial for SimCom Modem
 
-      static const int PwrPin = 2;                                //Power Pin of the LTE module
+      //https://arduino-projekte.info/wemos-d1-mini/
+      //Port 2 10k pull-up Port 15 10 k pull-down
+      #define PWR_PORT 15
 
+      #define SIM_PWR_ON_OFF
+      //#define SIM_DEEP_SLEEP
+      #define GPS
+      #define HTTP
+      //#define HTTP_UPLOAD
+      //#define HTTP_UPLOAD_TEST
+      //#define HTTP_TEST
+
+
+      //LED---------------------------------
+      #define LED 2
+      int counter = 0;
+      byte state = 0;
 
      
 
@@ -53,15 +68,38 @@
 
   bool wifi_send(float flat, float flon, const char* host, const int httpPort); 
   void Sleep(const int SleepTimeS, const bool wifi_enable); 
-  bool filter_gps(float flat, float flon, float lat_old, float lng_old);
-  
+ bool filter_gps(float flat, float flon);
+ 
+  void printSerial(const char *format, ...);
+  int powerUpSimModule();
+  int powerDownSimModule();
+  int wakeUpSimModule();
+  int deepSleepSimModule();
+  int softPowerDownSimModule();
+  int initSimModule();
+  int getSimInfo();
+  int setupSim7080NBIot1nce();
+  int testSim(int counts);
+  int checkSimConnectionStatus();
+  int checkSimCsq();
+  int activateAppNetwork(bool activate);
+  int getGpsPos(float timeout);
+  int httpGetSim(const double lat, const double lon);
+  int parseAtResponse(const char **param);
+  int expect_at(const char *command, const char *expect, float timeout, int tries);
+  int send_at(const char *command, const char *expect, float timeout);
+  int read_ser(const char *expect, float timeout);
+  double latConvert();
+  double lonConvert();
+  void ICACHE_RAM_ATTR ledTimerISR();
 
-
   
-  
+    
   
 void setup()
 {
+  pinMode(PWR_PORT,OUTPUT);
+  digitalWrite(PWR_PORT, LOW);  //Keep initial peak to high as short as possible -> for PWR-LTE
   #ifdef DEBUG 
   delay(10000); //only for Debugging!
   #endif
@@ -70,7 +108,15 @@ void setup()
   Serial.begin(115200);      //open debug serial connection
   
   printSerial("\n**** BOOT ************************************************************************************************************");
-  
+
+    //LED----------
+    pinMode(LED,OUTPUT);
+    timer1_attachInterrupt(ledTimerISR);
+    timer1_enable(TIM_DIV16, TIM_EDGE, TIM_SINGLE);
+    digitalWrite(LED, LOW);
+    Serial.println("Starting high");
+    state = 1;
+    timer1_write(20000000);
   
 
     //LTE--------------------
@@ -79,8 +125,13 @@ void setup()
     softSerial.begin(softBaud);               //open SoftwareSerial connection to Simcom Board
     delay(20);  
     printSerial("-- Power Up SimCom Module");
-	  powerUpSimModule();
-    delay(3000);
+	  #ifdef SIM_PWR_ON_OFF
+  powerUpSimModule();
+#endif
+#ifdef SIM_DEEP_SLEEP
+  wakeUpSimModule();
+#endif   
+    delay(1000);                              //wait 1s that the LTE module is ready
     printSerial("-- Init SimCom Module");
 	  retval = initSimModule();
 	  if (retval)
@@ -91,11 +142,14 @@ void setup()
       Sleep(SleepTimeS, wifi_enable); 
 	  }
 
+    send_at("AT+CPSMS=0", "OK", 1.0);
   	printSerial("-- Get SimCom Module Info");  //Nur zum Testen interessant
 	  getSimInfo(); //dto
   	printSerial("-- Init Sim7080 NB-Iot");
 	  setupSim7080NBIot1nce();
+    Serial.println("activate AppNetwork");
   	activateAppNetwork(true);
+   Serial.println("check connection status");
    checkSimConnectionStatus();
    //activateAppNetwork(false);
 }
@@ -106,15 +160,13 @@ void setup()
 
 void loop()
 {
+  Serial.println("---------------loop begins!----------------");
   double lat;
   double lon;
-  
   bool send_succesful = false;
   
-
-  while (softSerial.available() > 0)
-    {
-      //Serial.println("SoftwareSerial connection successful, starting GPS read");
+    
+      Serial.println("SoftwareSerial connection successful, starting GPS read");
       if(getGpsPos(60.0))
       {
       lat = latConvert();
@@ -123,11 +175,13 @@ void loop()
 
           if(filter_gps(lat, lon))
             {
+            Serial.println("Waypoints are at least 50m distant");
             EEPROM.begin(512);
             double lat_old = lat;                                     //update the old waypoint
             double lng_old = lon;
             EEPROM.put(eeAddress, lat_old);                                     //write old waypoint to EEPROM
             EEPROM.put((eeAddress + sizeof(double)),lng_old);
+            EEPROM.end();
 
   
             //Sending procedure--------------------
@@ -142,16 +196,22 @@ void loop()
                 EEPROM.begin(512); //Initialize EEPROM
 
                 EEPROM.get(eeAddressStackCounter,StackCounter);    //read EEPROM eeAddressStackCounter if there are any waypoints on stack
+                Serial.println("StackCounter is right now:");
+                Serial.println(StackCounter);
                 while(StackCounter > 0)                           //jump in while loop if there any waypoints on stack
                   {
                   double lat_tmp;
                   double lng_tmp;
                   EEPROM.get((eeAddress + ((eeAddressStackCounter-1)*sizeof(double))), lat_tmp);                        //read last waypoint from stack
+                  Serial.println("read waypoint from stack: lat=");
+                  Serial.println(lat_tmp);
                   EEPROM.get((eeAddressStack + sizeof(double) + ((eeAddressStackCounter-1)*sizeof(double)) ),lng_tmp);
+                  Serial.println("read waypoint from stack: lng=");
+                  Serial.println(lng_tmp);
 
                     if(httpGetSim(lat_tmp, lng_tmp))
                       { 
-                      Serial.print("Send last waypoint from stack, reducing stack counter to:");
+                      Serial.print("Send latest waypoint from stack, reducing stack counter to:");
                       StackCounter--;
                       Serial.println(StackCounter);
                       }
@@ -163,14 +223,12 @@ void loop()
                       }
                   }
                 EEPROM.put(eeAddressStackCounter,StackCounter);                                  //write updated StackCounter to EEPROM
-                powerDownSimModule();                                                            //Power Down the sim module
-              }
-
-      
+                EEPROM.end();
+              }         
             else 
               {
               Serial.println("error in sending procedure");
-              send_succesful = false;                                                          //This should be false, but there is no answer routine from server yet!!!!!!!!!!!!!
+              send_succesful = false;
               
               
               //routine for saving failed sending points
@@ -190,7 +248,8 @@ void loop()
                 {
                 Serial.println("Prevented Overflow in EEPROM, so no more storage is available!!!!");  
                 }
-              EEPROM.put(eeAddressStackCounter, StackCounter);         
+              EEPROM.put(eeAddressStackCounter, StackCounter);
+              EEPROM.end();         
 
               }
      
@@ -223,13 +282,13 @@ void loop()
 
       
   
-    }
-    if(send_succesful == true)
-    {
+    
+    //if(send_succesful == true)
+    //{
      Serial.print("go to sleep for:");
      Serial.println(SleepTimeS);
      Sleep(SleepTimeS, wifi_enable); 
-    }
+    //}
     
 
 
