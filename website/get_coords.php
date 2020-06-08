@@ -52,7 +52,7 @@ if(!mysqli_stmt_prepare($stmt, $query)){
     }
   }
 }
-$query="SELECT * FROM coords where name=? order by timestamp asc LIMIT 1000";
+$query="SELECT * FROM coords where name=? order by timestamp asc LIMIT 5000";
 if(!mysqli_stmt_prepare($stmt, $query)){
   echo "fail";
 } else {
@@ -65,7 +65,7 @@ if(!mysqli_stmt_prepare($stmt, $query)){
       $track = array();
       for($i=0; $i<$num-1; $i++) {
         $row = $result->fetch_assoc();
-        $pos = array($row["lat"],$row["lng"]);
+        $pos = array($row["lat"],$row["lng"],$row["timestamp"]);
         array_push($track,$pos);
       }
       $row = $result->fetch_assoc();
