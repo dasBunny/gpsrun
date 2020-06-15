@@ -2,6 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GPS Staffelstab</title>
 <style>
 body {
   font-family: Arial, 
@@ -94,9 +95,9 @@ span.psw {
 </head>
 <body bgcolor="#D1D1D1">
   <ul class="top">
-    <li class="top"><a href="map.html">Map</a></li>
-    <li class="top"><a href="admin_panel.php">Admin panel</a></li>
-    <li class="top"><a href="about.html">About</a></li>
+    <li class="top"><a href="map.html">Karte</a></li>
+    <li class="top"><a href="admin_panel.php">Adminpanel</a></li>
+    <li class="top"><a href="about.php">Über diese Seite</a></li>
 </ul>
 
 <form action="login_handler.php" method="post">

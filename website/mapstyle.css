@@ -32,19 +32,6 @@
             font-size: 36px;
             margin-left: 50px;
         }
-        ul.top {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: rgb(41, 45, 48);
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5vh;
-            z-index: 999
-        }
         .openbtn {
             font-size: 20px;
             cursor: pointer;
@@ -53,6 +40,7 @@
             padding: 10px 15px;
             border: none;
             width: 250px;
+            height: 5%;
         }
         .top li a {
             float: left;
@@ -64,14 +52,43 @@
             font-family:georgia,garamond,serif;
             font-size:16px;
             font-style:italic;
+            height: 5%;
         }
         li a:hover:not(.active) {
             background-color: #9E9E9E;
         }
-
+        ul.top {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: rgb(41, 45, 48);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5%;
+            z-index: 999
+        }   
+        .mapdisplay {
+            height: 95vh; 
+            width: 100vw; 
+            top: 5vh;
+        }
         @media only screen and (min-device-width: 1081px){
-            
+        
         }
         @media only screen and (max-device-width: 1080px){
-
+            ul.top{
+                visibility: hidden;
+            }
+            .top li a {
+                visibility: hidden;
+            }
+            li a:hover:not(.active) {
+               visibility: hidden;
+            }
+            .mapdisplay {
+                top: 0;
+            }
         }

@@ -110,9 +110,10 @@ else{
 </head>
 <body bgcolor="#D1D1D1">
     <ul class="top">
-        <li class="top"><a href="map.html">Map</a></li>
-        <li class="top"><a class="active" href="admin_panel.php">Admin panel</a></li>
-        <li class="top"><a href="about.html">About</a></li>
+        <li class="top"><a href="map.html">Karte</a></li>
+        <li class="top"><a class="active" href="admin_panel.php">Adminpanel</a></li>
+        <li class="top"><a href="about.php">Über diese Seite</a></li>
+        <li class="top"><a href="manual.php">Bedienungsanleitung</a></li>
         <li class="top" style="float:right"><a>
             <form action="logout.php" method="post">
                 <button class="logoutbutton" type="submit" name="logout-submit">Logout</button>

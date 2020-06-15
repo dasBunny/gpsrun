@@ -16,12 +16,13 @@
 </head>
 <body>
     <ul class="top">
-        <li class="top"><a class="active" href="">Map</a></li>
-        <li class="top"><a href="admin_panel.php">Admin panel</a></li>
-        <li class="top"><a href="about.html">About</a></li>
-        <li class="top" style="float:right"><button class="openbtn" onclick="openNav()">☰ Map settings</button></li>
+        <li class="top"><a class="active" href="">Karte</a></li>
+        <li class="top"><a href="admin_panel.php">Adminpanel</a></li>
+        <li class="top"><a href="about.php">Über diese Seite</a></li>
+        <li class="top"><a href="manual.php">Bedienungsanleitung</a></li>
+        <li class="top" style="float:right"><button class="openbtn" onclick="openNav()">☰ Optionen</button></li>
     </ul>
-    <div id="mapid" style="height: 95vh; width: 100vw; top: 5vh"></div>
+    <div id="mapid" class="mapdisplay"></div>
     <div id="mySidebar" class="sidebar">
         <a href="#">About</a>
         <a href="#">Services</a>
@@ -111,7 +112,6 @@
                 success: function(response){
                     console.log(response);
                     json_result = JSON.parse(JSON.stringify(response));
-                    console.log(json_result.marker["lat"]); 
                     runner_2 = L.marker(L.latLng(parseFloat(json_result.marker["lat"]), parseFloat(json_result.marker["long"])),{icon: runner_black, riseOnHover: true});
                     runner_2.addTo(mymap);
                     preview_line = L.polyline(json_result.preview, {color: 'gray', dashArray: '20, 20'}).addTo(mymap);
@@ -120,9 +120,36 @@
                     mymap.fitBounds(preview_line.getBounds());
                     json_result.track.forEach(pointsTooltipHelper);
                     points.forEach(pointsMapAdder);
-                    console.log(points);
+                    if(navigator.geolocation){
+                        console.log("Geolocation available");
+                        navigator_watch_id = navigator.geolocation.watchPosition(watchPosition);
+                    }
+                    else {
+                        console.log("Geolocation not available");
+                    }
                 }
             });
+        }
+
+        function watchPosition(position){
+            if(firstClientPos){
+                console.log("First Position");
+                location_marker = L.marker(L.latLng(client_lat,client_long),{icon: client_pos_icon, riseOnHover: true});
+                location_marker.bindTooltip("Dein Standort");
+                location_marker.addTo(mymap);
+                firstClientPos = false;
+            }
+            else{
+                location_marker.setLatLng(L.latLng(position.coords.latitude,position.coords.longitude));
+                console.log("update");
+            }
+        }
+
+        function client_coords(position){
+            client_lat = position.coords.latitude;
+            client_long = position.coords.longitude;
+            console.log(client_lat);
+            console.log(client_long);
         }
 
         function pointsMapAdder(point){
@@ -134,7 +161,9 @@
             temp_marker.bindTooltip("<b>Übermittlungszeitpunkt</b></br>"+point[2], {permanent: false, className: "my-label", offset: [0, 0] });
             points.push(temp_marker);
         }
-
+        var firstClientPos = true;
+        var client_lat = 49.00;
+        var client_long = 9.50;
         var points = [];
         var mymap = L.map('mapid').setView([50, 8.8], 7);
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZGFzYnVubnkiLCJhIjoiY2s3amdmNDRhMHQ0bDNrbzJwazd3eGFtMCJ9.NF3ZMkRlGqK08TK617teKw', {
@@ -153,20 +182,16 @@
 
         var runner_blue = L.icon({
         iconUrl: 'laeufer.png',
-        iconSize:     [38, 38], // size of the icon
-       // shadowSize:   [50, 64], // size of the shadow
-       // iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-       // shadowAnchor: [4, 62],  // the same for the shadow
-       // popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        iconSize:     [38, 38],
         });
         var runner_black = L.icon({
-        iconUrl: 'laeufer_black.png',
-        iconSize:     [38, 38], // size of the icon
-       // shadowSize:   [50, 64], // size of the shadow
-       // iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-       // shadowAnchor: [4, 62],  // the same for the shadow
-       // popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+            iconUrl: 'laeufer_black.png',
+            iconSize:     [38, 38]
         });
+        var client_pos_icon = L.icon({
+            iconUrl: 'cursor.png',
+            iconSize:     [30, 30]
+        });       
         var la_garenne = L.marker([48.905, 2.2436],{riseOnHover: true}).addTo(mymap);
         var wangen = L.marker([47.6875, 9.8318],{riseOnHover: true}).addTo(mymap);
         la_garenne.bindTooltip("La Garenne", {permanent: false, className: "my-label", offset: [0, 0] });

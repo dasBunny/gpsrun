@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
+    <title>GPS Staffelstab</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body {
@@ -94,20 +95,21 @@ span.psw {
 </head>
 <body bgcolor="#D1D1D1">
   <ul class="top">
-    <li class="top"><a href="map.html">Map</a></li>
-    <li class="top"><a href="admin_panel.php">Admin panel</a></li>
-    <li class="top"><a href="about.html">About</a></li>
+    <li class="top"><a href="map.html">Karte</a></li>
+    <li class="top"><a href="admin_panel.php">Adminpanel</a></li>
+    <li class="top"><a href="about.php">Über diese Seite</a></li>
 </ul>
 
 <form action="signup_handler.php" method="post">
   <div class="container">
-    <h2>Log in to make changes</h2>
+    <h2>Registrieren um Einstellungen zu ändern</h2>
         <label for="username"><b>Username</b></label>
         <input type="text" placeholder="Enter Username" name="username" required>
-        <label for="psw"><b>Password</b></label>
+        <label for="psw"><b>Passwort</b></label>
         <input type="password" placeholder="Enter Password" name="password" required>
-        <label for="psw"><b>Repeat Password</b></label>
+        <label for="psw"><b>Passwort wiederholen</b></label>
         <input type="password" placeholder="Repeat Password" name="password_repeat" required>
+        Bitte unbedingt ein einmaliges und sicheres Passwort (Sonderzeichen, Zahlen, Großbuchstaben etc.) wählen, um Missbrauch zu erschweren <br>
         <button type="submit" name="submit">Sign up</button>
         <label>
           <input type="checkbox" checked="checked" name="remember"> Remember me
@@ -115,8 +117,8 @@ span.psw {
       </div>
     
       <div class="container" style="background-color:#f1f1f1">
-        <button type="button" class="cancelbtn" href="map.html">Cancel</button>
-        <span class="psw"><a href="#">Privacy policy</a></span>
+        <button type="button" class="cancelbtn" href="map.html">Abbrechen</button>
+        <span class="psw"><a href="privacy.html">Datenschutzerklärung</a></span>
       </div>
     </form>
     
