@@ -7,20 +7,8 @@
  * - Send Data to Server as HTTP GET header
  * 
  */
-#include <SoftwareSerial.h>
-//#include "TinyGPS++.h"
-#include <ESP8266WiFi.h>
-#include "definitions.h"
-#include <EEPROM.h>
-#include <string.h>
-#include <stdarg.h>
-#include <stdlib.h>
 
-#define DEBUG 1
-#define GPS
-#define HTTP
-#define HTTP_UPLOAD
-//#define HTTP_UPLOAD_TEST
+
 
 
 /**
@@ -150,25 +138,84 @@ double lonConvert()
 }
 
 
-int powerUpSimModule()  //power down sequence
+int powerUpSimModule()
 {
-	//power up sequence
-  digitalWrite(4, HIGH);
-  delay(100);
-  digitalWrite(4, LOW);
-  delay(1000);
-  digitalWrite(4, HIGH);
-	return 0;
+  //power up sequence High -> Reset Sim7080G Note: NPN Transistor at PWR Input
+    printSerial("++++ Power Up Sim7080 ++++");
+    printSerial("Port %d Output", PWR_PORT);
+    pinMode(PWR_PORT,OUTPUT);
+    printSerial("Port %d HIGH", PWR_PORT);
+    digitalWrite(PWR_PORT, HIGH);
+    printSerial("Delay 1000ms");
+    delay(1000);  
+    printSerial("Port %d LOW", PWR_PORT);
+    digitalWrite(PWR_PORT, LOW);
+    printSerial("Delay 500ms");
+    delay(500);
+ 
+  return 0;
 }
 
-int powerDownSimModule()  //power down sequence
+int powerDownSimModule()
 {
-  digitalWrite(4, HIGH);
-  delay(100);
-  digitalWrite(4, LOW);
-  delay(1000);	
+  //power down sequence   
+    printSerial("++++ Power Down Sim7080 ++++");
+    printSerial("Port %d Output", PWR_PORT);
+    pinMode(PWR_PORT,OUTPUT);
+    printSerial("Port %d HIGH", PWR_PORT);
+    digitalWrite(PWR_PORT, HIGH);
+    printSerial("Delay 1200ms");
+    delay(1200);  
+    printSerial("Port %d LOW", PWR_PORT);
+    digitalWrite(PWR_PORT, LOW);
+  
+  return 0;
+}
 
-	return 0;
+int wakeUpSimModule()
+{
+  //power up sequence High -> Reset Sim7080G Note: NPN Transistor at PWR Input
+    printSerial("++++ Wake Up Sim7080 ++++");
+    printSerial("Port %d Output", PWR_PORT);
+    pinMode(PWR_PORT,OUTPUT);
+    printSerial("Port %d HIGH", PWR_PORT);
+    digitalWrite(PWR_PORT, HIGH);
+    printSerial("Delay 100ms");
+    delay(100);  
+    printSerial("Port %d LOW", PWR_PORT);
+    digitalWrite(PWR_PORT, LOW);
+    printSerial("Delay 100ms");
+    delay(100);  
+ 
+  return 0;
+}
+
+int deepSleepSimModule()  //## TB ##
+{
+  //deep sleep sequence
+    activateAppNetwork(false);
+    printSerial("++++ Deep Sleep Sim7080G ++++");
+    send_at("AT+CPSMSTATUS=1","OK", 1.0);
+    send_at("AT+CEREG=4","OK", 1.0);
+    send_at("AT+CEREG?","OK", 1.0);
+    
+  send_at("AT+CPSMS?", "OK", 1.0);
+  
+    //send_at("AT+CPSMS=1,,,\"01011111\",\"00000001\"", "OK", 1.0);
+    printSerial("Request PSM Mode");
+    send_at("AT+CPSMS=1", "OK", 1.0);
+    read_ser("+CPSMSTATUS: \"ENTER PSM\"", 60.0); //Wait for PSM Confirmation
+  
+  return 0;
+}
+
+int softPowerDownSimModule()
+{
+  //power down sequence   
+    printSerial("++++ Soft Power Down Sim7080 ++++");
+    printSerial("Request Power Off");
+    send_at("AT+CPOWD=1", "OK", 0.1);
+  return 0;
 }
 
 
