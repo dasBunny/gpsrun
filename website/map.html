@@ -20,16 +20,23 @@
         <li class="top"><a href="admin_panel.php">Adminpanel</a></li>
         <li class="top"><a href="about.php">Über diese Seite</a></li>
         <li class="top"><a href="manual.php">Bedienungsanleitung</a></li>
-        <li class="top" style="float:right"><button class="openbtn" onclick="openNav()">☰ Optionen</button></li>
-    </ul>
-    <div id="mapid" class="mapdisplay"></div>
-    <div id="mySidebar" class="sidebar">
-        <a href="#">About</a>
-        <a href="#">Services</a>
-        <a href="#">Marker 1</a>
-        <a><select id="select1" name="select1">
+        <li class="top" style="float:right; width: 20vw"><a><select id="select1" name="select1">
             <option>Loading...</option>
-        </select> <button onclick="update1()">GO</button></a>
+        </select> <button onclick="update1()">GO</button></a></li>
+<center></ul>
+    <div id="mapid" class="mapdisplay"></div>
+    <button class="mobilebtn" onclick="openNav()">☰ Optionen</button>
+    <div id="mySidebar" class="sidebar">
+        <center><a href="#">Adminpanel</a></center>
+        <a> </a>
+        <center><a href="#">Infos</a></center>
+        <a> </a>
+        <center><a href="#">Anleitung</a></center>
+        <a> </a>
+        <center><a href="#">Track auswählen</a></center>
+        <center><a><select id="select1" name="select1">
+            <option>Loading...</option>
+        </select> <button onclick="update1()">GO</button></a></center>
 
     </div>
     <script>
@@ -65,7 +72,6 @@
                         select.options[j] = null;
                     }
                     for(;i<il;i++){
-                        console.log(response[i]);
                         var opt = document.createElement("option");
                         opt.value=response[i];
                         opt.innerHTML = response[i];
@@ -80,11 +86,17 @@
                 document.getElementById("mySidebar").style.width = "0";
                 sidebarOpen = false;
             }else{
-                document.getElementById("mySidebar").style.width = "250px";
+                document.getElementById("mySidebar").style.width = "100%";
                 sidebarOpen = true;
                 populateSelectMenu();
             }
         }
+
+        var mobileMenuOpen = false;
+        function openMobileMenu(){
+
+        }
+
         function update() {
             $.ajax({
                 type: "POST",
@@ -100,6 +112,7 @@
                     mymap.fitBounds(line3.getBounds());
                 }       
             });
+            console.log("Updating map");
         }
 
         function populateMap() {
@@ -129,6 +142,7 @@
                     }
                 }
             });
+            setInterval(update,60000);
         }
 
         function watchPosition(position){
@@ -141,7 +155,6 @@
             }
             else{
                 location_marker.setLatLng(L.latLng(position.coords.latitude,position.coords.longitude));
-                console.log("update");
             }
         }
 
@@ -162,8 +175,8 @@
             points.push(temp_marker);
         }
         var firstClientPos = true;
-        var client_lat = 49.00;
-        var client_long = 9.50;
+        var client_lat = 0.0;
+        var client_long = 0.0;
         var points = [];
         var mymap = L.map('mapid').setView([50, 8.8], 7);
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZGFzYnVubnkiLCJhIjoiY2s3amdmNDRhMHQ0bDNrbzJwazd3eGFtMCJ9.NF3ZMkRlGqK08TK617teKw', {
@@ -200,6 +213,7 @@
         var line3;
         
        var trackname1='riefensbeek'; 
+       populateSelectMenu();
         $.ajax({
             type: "POST",
             url: "get_config.php",
@@ -209,7 +223,7 @@
                 console.log(response);
                 if (typeof response["default_track"] !== 'undefined') {
                     trackname1=response["default_track"];
-                    console.log(trackname1);
+                    //console.log(trackname1);
                     populateMap();
                 }
             },
