@@ -3,11 +3,11 @@
             padding: 0;
         }
         .sidebar {
-            height: 95vh;
+            height: 85vh;
             width: 0;
             position: fixed;
             z-index: 999;
-            top: 5vh;
+            top: 0;
             right: 0;
             background-color: #111;
             overflow-x: hidden;
@@ -15,9 +15,10 @@
             padding-top: 60px;
         }
         .sidebar a {
-            padding: 8px 8px 8px 32px;
+            padding: 8px 8px 8px 100px;
+            margin: 0px 0px 0px 60px;
             text-decoration: none;
-            font-size: 25px;
+            font-size: 60px;
             color: #818181;
             display: block;
             transition: 0.3s;
@@ -35,19 +36,29 @@
         .openbtn {
             font-size: 20px;
             cursor: pointer;
-            background-color: #111;
+            background-color: rgb(41, 45, 48);
             color: white;
-            padding: 10px 15px;
+            padding: 1.5% 1%;
             border: none;
             width: 250px;
             height: 5%;
+        }
+        .mobilebtn {
+            font-size: 70px;
+            cursor: pointer;
+            background-color: rgb(41, 45, 48);
+            color: white;
+            padding: 1.5% 1%;
+            border: none;
+            width: 0%;
+            height: 0%;
         }
         .top li a {
             float: left;
             display: block;
             color: white;
             text-align: center;
-            padding: 14px 16px;
+            padding: 1% 1%;
             text-decoration: none;
             font-family:georgia,garamond,serif;
             font-size:16px;
@@ -75,6 +86,66 @@
             width: 100vw; 
             top: 5vh;
         }
+        select { 
+            appearance: none; 
+            outline: 0; 
+            padding: 1.5%;
+            background: rgb(231, 231, 231); 
+            background-image: none; 
+            width: 15vw; 
+            height: 5%; 
+            color: black; 
+            cursor: pointer; 
+            border:1px solid rgb(192, 192, 192); 
+        } 
+        .select { 
+            position: relative; 
+            display: block; 
+            width: 15em; 
+            height: 2em; 
+            line-height: 3; 
+            overflow: hidden; 
+            border-radius: .25em; 
+            padding-bottom:10px; 
+              
+        }
+        .button {
+            position: relative;
+            background-color: #4CAF50;
+            border: none;
+            font-size: 15px;
+            color: #FFFFFF;
+            height: 50px;
+            width: 80px;
+            text-align: center;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+            text-decoration: none;
+            overflow: hidden;
+            cursor: pointer;
+          }
+          
+          .button:after {
+            content: "";
+            background: #90EE90;
+            display: block;
+            position: absolute;
+            padding-top: 300%;
+            padding-left: 350%;
+            margin-left: -20px!important;
+            margin-top: -120%;
+            opacity: 0;
+            transition: all 0.8s
+          }
+          
+          .button:active:after {
+            padding: 0;
+            margin: 0;
+            opacity: 1;
+            transition: 0s
+          }
+
+
         @media only screen and (min-device-width: 1081px){
         
         }
@@ -90,5 +161,10 @@
             }
             .mapdisplay {
                 top: 0;
+                height: 85vh;
+            }
+            .mobilebtn {
+                height: 15vh;
+                width: 100%;
             }
         }

@@ -57,7 +57,16 @@
 
       //LED---------------------------------
       #define LED 2
+      #define LED_R 3
+      #define LED_G 4
+      #define LED_B 5
+      #define BAT_VOLTAGE_PIN A0
+      #define LONG_INTERVAL 40000000
+      #define SHORT_INTERVAL 20000000
+      #define FULL_INTERVAL 80000000
+      bool timerInUse = false;
       int counter = 0;
+      int batStatus = 19;
       byte state = 0;
 
      
@@ -91,7 +100,13 @@
   int read_ser(const char *expect, float timeout);
   double latConvert();
   double lonConvert();
-  void ICACHE_RAM_ATTR ledTimerISR();
+
+  void beginPowerLED();
+  void ICACHE_RAM_ATTR bat20();
+  void ICACHE_RAM_ATTR bat40();
+  void ICACHE_RAM_ATTR bat60();
+  void ICACHE_RAM_ATTR bat80();
+  void ICACHE_RAM_ATTR bat100();
 
   
     
@@ -110,13 +125,13 @@ void setup()
   printSerial("\n**** BOOT ************************************************************************************************************");
 
     //LED----------
-    pinMode(LED,OUTPUT);
-    timer1_attachInterrupt(ledTimerISR);
-    timer1_enable(TIM_DIV16, TIM_EDGE, TIM_SINGLE);
-    digitalWrite(LED, LOW);
-    Serial.println("Starting high");
-    state = 1;
-    timer1_write(20000000);
+    pinMode(LED_R,OUTPUT);
+    pinMode(LED_G,OUTPUT);
+    pinMode(LED_B,OUTPUT);
+    digitalWrite(LED_R, LOW);
+    digitalWrite(LED_G, LOW);
+    digitalWrite(LED_B, LOW);
+    beginPowerLED();
   
 
     //LTE--------------------
