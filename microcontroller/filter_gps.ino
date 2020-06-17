@@ -2,18 +2,17 @@
 
 bool filter_gps(float flat, float flon) {
 
-  EEPROM.begin(512);                                        //Initialize EEPROM
-  double lat_old;
-  double lng_old;
-  EEPROM.get(eeAddress, lat_old);                           //read old latitude from EEPROM
-  EEPROM.get((eeAddress + sizeof(double)),lng_old);         //read old longitude from EEPROM
-
+  EEPROM_STRUCT readData = {0.0,0.0,""};
   
+  EEPROM.begin(512);                                        //Initialize EEPROM
+  EEPROM.get(eeAddress, readData);                           //read old waypoint from EEPROM
+  EEPROM.end();
+    
     double distanceM = gps.distanceBetween(                                           //calculate the distance between new and old waypoint
     (double)flat,
     (double)flon,
-    lat_old,
-    lng_old);
+    readData.Elat,
+    readData.Elon);
     Serial.print("distance between old and new waypoint in meters:");
     Serial.println(distanceM);
 

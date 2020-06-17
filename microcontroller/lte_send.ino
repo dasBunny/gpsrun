@@ -33,6 +33,7 @@ char atResponse[SIZE_AT_RESPONSE] = "";
 char val[NVAL][SVAL] = {"",};
 char slat[16] = "";
 char slon[16] = "";
+char stimestamp[16]="";
 char txt[SIZE_OUT] = "";  
 
 int debugLevel = 1;                             //2=verbose mode
@@ -136,6 +137,10 @@ double lonConvert()
 {
   return(atof(slon));
 }
+
+
+
+//dddddddddddddddddddddddddd
 
 
 int powerUpSimModule()
@@ -358,13 +363,14 @@ int getGpsPos(float timeout)
    parseAtResponse(gpspar);
    strcpy(slat, val[2]);
    strcpy(slon, val[3]);
+   strcpy(stimestamp, val[10]);
 
 	delay(100);
 	send_at("AT+SGNSCMD=0", "OK", 10.0);
 	
 }
 
-int httpGetSim(const double lat, const double lon)
+int httpGetSim(const double lat, const double lon, const char *timestamp)
 {
 	char *cptr;
 	if (send_at("AT+CNACT?", "+CNACT: 0,1", 1.0) == 0)
@@ -407,7 +413,7 @@ int httpGetSim(const double lat, const double lon)
 	send_at("AT+SHAHEAD=\"Content-Type\",\"application/x-www-form-urlencoded\"", "OK", 10.0);
 	send_at("AT+SHAHEAD=\"Connection\",\"close\"", "OK", 10.0);
 	send_at("AT+SHAHEAD=\"Cache-control\",\"no-cache\"", "OK", 10.0);
-	sprintf(at, "AT+SHREQ=\"http://%s:%d/lat=%f/lng=%f/token=%s\",1", host, httpPort, lat, lon, token);
+	sprintf(at, "AT+SHREQ=\"http://%s:%d/lat=%f/lng=%f/tk=%s/ts=%s\",1", host, httpPort, lat, lon, token, timestamp);
 	printSerial("GET '%s'", at);
 #ifdef HTTP_UPLOAD
 	send_at(at, "OK", 10.0);

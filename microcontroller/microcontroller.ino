@@ -10,11 +10,20 @@
 
 
   //CONFIG---------------------------------------------------------------------------------------------------------------------------------------------------
+     struct EEPROM_STRUCT {
+      double Elat;
+      double Elon;
+      char Etimestamp[16];
+      };   
+    
     //EEPROM address--------------
-      const int eeAddress = 0;                                    //start adress of eeprom last waypoint storage
-      const int eeAddressStackCounter = sizeof(int);              //start address of the counter which states the amount of waypoints on stack
-      const int eeAddressStack = ((2*sizeof(double))+sizeof(int)); //start address of the stack
-      const int eeAddressMax = 512;                               //this is the max address of the EEPROM on the ESP8266
+      const int eeAddress = 0;                                                            //start adress of eeprom last waypoint storage
+      const int eeAddressStackCounter = sizeof(EEPROM_STRUCT);                            //start address of the counter which states the amount of waypoints on stack
+      const int eeAddressStack = eeAddressStackCounter + sizeof(int);                     //start address of the stack
+      const int eeAddressMax = 512;                                                       //this is the max address of the EEPROM on the ESP8266
+
+    
+      
 
     //HTTP------------------------
       //as these are sensible information, they are excluded from the git upload! --> gitignore
@@ -28,9 +37,9 @@
     //GPS------------------------------
     //  static const int RXPin = 5, TXPin = 4;                      //software serial pins for gps communication
     //  static const uint32_t GPSBaud = 9600;                       //Baud rate for gps communication
-      int gps_failcounter = 0;                                    //Counter for failed GPS tries
+      int gps_failcounter = 0;                                      //Counter for failed GPS tries
     //
-      TinyGPSPlus gps;                                            //The TinyGPS++ object
+      TinyGPSPlus gps;                                              //The TinyGPS++ object
     //  SoftwareSerial ss(RXPin, TXPin);                            //defining the serial connection to the GPS device
 
   
@@ -68,8 +77,7 @@
 
   bool wifi_send(float flat, float flon, const char* host, const int httpPort); 
   void Sleep(const int SleepTimeS, const bool wifi_enable); 
- bool filter_gps(float flat, float flon);
- 
+  bool filter_gps(float flat, float flon); 
   void printSerial(const char *format, ...);
   int powerUpSimModule();
   int powerDownSimModule();
@@ -84,7 +92,7 @@
   int checkSimCsq();
   int activateAppNetwork(bool activate);
   int getGpsPos(float timeout);
-  int httpGetSim(const double lat, const double lon);
+  int httpGetSim(const double lat, const double lon, const char *timestamp);
   int parseAtResponse(const char **param);
   int expect_at(const char *command, const char *expect, float timeout, int tries);
   int send_at(const char *command, const char *expect, float timeout);
@@ -92,6 +100,8 @@
   double latConvert();
   double lonConvert();
   void ICACHE_RAM_ATTR ledTimerISR();
+  
+  extern char stimestamp[16];
 
   
     
@@ -171,26 +181,30 @@ void loop()
       {
       lat = latConvert();
       lon = lonConvert();
-
+      
 
           if(filter_gps(lat, lon))
             {
             Serial.println("Waypoints are at least 50m distant");
             EEPROM.begin(512);
-            double lat_old = lat;                                     //update the old waypoint
-            double lng_old = lon;
-            EEPROM.put(eeAddress, lat_old);                                     //write old waypoint to EEPROM
-            EEPROM.put((eeAddress + sizeof(double)),lng_old);
+            
+            EEPROM_STRUCT storeData = {0.0,0.0,""};
+            
+            storeData.Elat = lat;                                     //update the old waypoint
+            storeData.Elat = lon;
+            strcpy(storeData.Etimestamp, stimestamp);
+
+            EEPROM.put(eeAddress, storeData);                                     //write old waypoint + Timestamp to EEPROM
             EEPROM.end();
 
   
             //Sending procedure--------------------
 
-            if(httpGetSim(lat, lon)==0)
+            if(httpGetSim(lat, lon, stimestamp)==0)
               { 
               Serial.println("send succesful");
               send_succesful = true;
-            int StackCounter = 0;
+              int StackCounter = 0;
                 //routine for sending the queue
                 
                 EEPROM.begin(512); //Initialize EEPROM
@@ -200,16 +214,14 @@ void loop()
                 Serial.println(StackCounter);
                 while(StackCounter > 0)                           //jump in while loop if there any waypoints on stack
                   {
-                  double lat_tmp;
-                  double lng_tmp;
-                  EEPROM.get((eeAddress + ((eeAddressStackCounter-1)*sizeof(double))), lat_tmp);                        //read last waypoint from stack
-                  Serial.println("read waypoint from stack: lat=");
-                  Serial.println(lat_tmp);
-                  EEPROM.get((eeAddressStack + sizeof(double) + ((eeAddressStackCounter-1)*sizeof(double)) ),lng_tmp);
-                  Serial.println("read waypoint from stack: lng=");
-                  Serial.println(lng_tmp);
+                  EEPROM_STRUCT readDatatmp = {0.0,0.0,""};
+                  EEPROM.get(eeAddress + ((eeAddressStackCounter-1)*sizeof(readDatatmp)), readDatatmp);                        //read last waypoint from stack
+                  Serial.println("read waypoint from stack: latitude=");
+                  Serial.println(readDatatmp.Elat);
+                  Serial.println("read waypoint from stack: longitude=");
+                  Serial.println(readDatatmp.Elon);
 
-                    if(httpGetSim(lat_tmp, lng_tmp))
+                    if(httpGetSim(readDatatmp.Elat, readDatatmp.Elon, readDatatmp.Etimestamp))
                       { 
                       Serial.print("Send latest waypoint from stack, reducing stack counter to:");
                       StackCounter--;
@@ -237,10 +249,14 @@ void loop()
               int StackCounter = 0;
               EEPROM.get(eeAddressStackCounter,StackCounter);
 
-              if(StackCounter<=(eeAddressMax-(2*sizeof(double))))                                                                          //check if overflow
+              if(StackCounter<=(eeAddressMax-(sizeof(EEPROM_STRUCT))))                                                                          //check if overflow
                 {
-                  EEPROM.put((eeAddressStack + ((eeAddressStackCounter-1)*sizeof(double)) ), lat_old);                                     //write waypoint to EEPROM to send it later if internet connection is available
-                  EEPROM.put((eeAddressStack + sizeof(double) + ((eeAddressStackCounter-1)*sizeof(double)) ),lng_old);
+                  EEPROM_STRUCT storeDataStack = {0.0,0.0,""};
+                  storeDataStack.Elat = storeData.Elat;
+                  storeDataStack.Elon = storeData.Elon;
+                  
+                  EEPROM.put((eeAddressStack + ((eeAddressStackCounter-1)*sizeof(EEPROM_STRUCT)) ), storeDataStack);                       //write waypoint to EEPROM to send it later if internet connection is available
+                  
                   StackCounter++;
                 }
 
