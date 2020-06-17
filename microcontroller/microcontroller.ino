@@ -108,6 +108,7 @@
   int read_ser(const char *expect, float timeout);
   double latConvert();
   double lonConvert();
+  extern char stimestamp[16];
 
   void beginPowerLED();
   void ICACHE_RAM_ATTR bat20();
