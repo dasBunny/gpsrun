@@ -3,14 +3,24 @@ int checkBat(){
   Serial.print(voltage);
   if(voltage < 4.8){ //If voltage is below 4.8V the device should power down without sending anything
     //power off
-    Serial.print("Power to low, shutting down");
+    Serial.println("Power to low, shutting down");
     return 0;
   }
   else{
-    voltage=-4.8;
-    int ret = int(voltage*10)%4;
-    Serial.println("Voltage State: "+ret);
-    return ret;
+    Serial.println("Sufficient voltage level");
+    if(voltage <5.2){
+      return 1;
+    }
+    else if(voltage < 5.6){
+      return 2;
+    }
+    else if(voltage < 6.0){
+      return 3;
+    }
+    else if(voltage < 6.4){
+      return 4;
+    }
+    return 5;
   }
 }
 
