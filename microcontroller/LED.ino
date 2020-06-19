@@ -27,7 +27,9 @@ int checkBat(){
 void beginPowerLED(){
   state = 1; //Resetting state, incase it was used before
   timerInUse = true;
-  switch(checkBat()){
+  int batState = checkBat();
+  Serial.println("Voltage Level: "+batState);
+  switch(batState){
     case 0:
       digitalWrite(LED_R, HIGH);
       delay(500);
@@ -48,19 +50,26 @@ void beginPowerLED(){
       timer1_write(LONG_INTERVAL);
       break;
     case 3:
+      digitalWrite(LED_R, HIGH);
+      digitalWrite(LED_G, HIGH);
       timer1_attachInterrupt(bat60);
+      timer1_write(LONG_INTERVAL);
       break;
     case 4:
+      digitalWrite(LED_G, HIGH);
       timer1_attachInterrupt(bat80);
+      timer1_write(LONG_INTERVAL);
       break;
     case 5:
+      digitalWrite(LED_G, HIGH);
       timer1_attachInterrupt(bat100);
+      timer1_write(FULL_INTERVAL);
       break;
     default:
       Serial.println("Unknown voltage level, no LED sequence started");
       break;
-      timer1_enable(TIM_DIV16, TIM_EDGE, TIM_SINGLE);
   }
+  timer1_enable(TIM_DIV16, TIM_EDGE, TIM_SINGLE);
 }
 
 void ICACHE_RAM_ATTR bat20(){
