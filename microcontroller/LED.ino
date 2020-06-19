@@ -97,7 +97,7 @@ void ICACHE_RAM_ATTR bat40(){
   }
 }
 
-void ICACHE_RAM_ATTR bat60(int led_state){
+void ICACHE_RAM_ATTR bat60(){
   switch(state){
     case 1:
       Serial.println("Case 1");
@@ -143,7 +143,7 @@ void ICACHE_RAM_ATTR bat60(int led_state){
   }
 }
 
-void ICACHE_RAM_ATTR bat80(int led_state){
+void ICACHE_RAM_ATTR bat80(){
     switch(state){
     case 1:
       Serial.println("Case 1");
@@ -184,7 +184,7 @@ void ICACHE_RAM_ATTR bat80(int led_state){
   }
 }
 
-void ICACHE_RAM_ATTR bat100(int led_state){
+void ICACHE_RAM_ATTR bat100(){
   digitalWrite(LED_G,LOW);
   timerInUse = false;
 }

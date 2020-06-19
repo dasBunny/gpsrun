@@ -109,7 +109,6 @@
                     line3.setLatLngs(response.track);
                     runner_2.setLatLng(L.latLng(parseFloat(response.marker["lat"]), parseFloat(response.marker["long"])));
                     runner_2.bindTooltip(json_result.marker["timestamp"]+"<br>"+calcuateLength(line3.getLatLngs())+"km", {permanent: false, className: "my-label", offset: [0, 0] });
-                    mymap.fitBounds(line3.getBounds());
                 }       
             });
             console.log("Updating map");
@@ -142,7 +141,7 @@
                     }
                 }
             });
-            setInterval(update,60000);
+            setInterval(update,20000);
         }
 
         function watchPosition(position){
