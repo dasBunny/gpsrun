@@ -46,7 +46,8 @@
       
     //Modem-Interface----------------------
       #define DEBUG 1                                             //set to debug mode
-      static const int RXPin = 5, TXPin = 4;                      //Software serial pins
+      //static const int RXPin = 5, TXPin = 4;                      //Software serial pins
+      static const int RXPin = 4, TXPin = 5;                      //Software serial pins
       static const uint32_t softBaud = 9600;                      //Baud rate for communication with module
 
       SoftwareSerial softSerial(RXPin, TXPin);                    //Software Serial for SimCom Modem

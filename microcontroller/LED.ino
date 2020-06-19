@@ -23,6 +23,8 @@ void beginPowerLED(){
       delay(500);
       digitalWrite(LED_R, LOW);
       //SHUTDOWN CODE HERE
+      Serial.println("Battery low, going to sleep");
+      Sleep(SleepTimeS, wifi_enable);
       break;
     case 1:
       timer1_attachInterrupt(bat20);
@@ -97,7 +99,7 @@ void ICACHE_RAM_ATTR bat40(){
   }
 }
 
-void ICACHE_RAM_ATTR bat60(int led_state){
+void ICACHE_RAM_ATTR bat60(){
   switch(state){
     case 1:
       Serial.println("Case 1");
@@ -143,7 +145,7 @@ void ICACHE_RAM_ATTR bat60(int led_state){
   }
 }
 
-void ICACHE_RAM_ATTR bat80(int led_state){
+void ICACHE_RAM_ATTR bat80(){
     switch(state){
     case 1:
       Serial.println("Case 1");
@@ -184,7 +186,7 @@ void ICACHE_RAM_ATTR bat80(int led_state){
   }
 }
 
-void ICACHE_RAM_ATTR bat100(int led_state){
+void ICACHE_RAM_ATTR bat100(){
   digitalWrite(LED_G,LOW);
   timerInUse = false;
 }
