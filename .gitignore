@@ -26,3 +26,4 @@ microcontroller/TinyGPSPlus/library.properties
 microcontroller/TinyGPSPlus/README.md
 .vscode/c_cpp_properties.json
 .vscode/arduino.json
+events.log

@@ -44,6 +44,7 @@
             height: 5%;
         }
         .mobilebtn {
+            display: none;
             font-size: 70px;
             cursor: pointer;
             background-color: rgb(41, 45, 48);
@@ -166,5 +167,18 @@
             .mobilebtn {
                 height: 15vh;
                 width: 100%;
+                display: block;
+            }
+            select {
+                width: 70vw; 
+                height: 10vh; 
+            }
+            .select {
+                width: 70vw; 
+                height: 10vh; 
+            }
+            button {
+                height: 10vh;
+                width: 10vh;
             }
         }

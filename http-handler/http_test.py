@@ -33,6 +33,7 @@ class myHandler(BaseHTTPRequestHandler):
                 val = i.split("=")
                 data[val[0]]=val[1]
         print(data)
+        logtofile("Sending response code 200")
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()

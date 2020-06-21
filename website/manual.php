@@ -111,25 +111,31 @@ session_start();
         <li class="top"><a href="manual.php">Bedienungsanleitung</a></li>
       </ul>
     <div style="margin-top: 7vh">
-        <h1>Icons</h1>
-        <p>Im Rahmen der Städtepartnerschaft mit La Garenne-Colombes veranstaltet die Stadt Wangen im Allgäu einen Staffellauf. </p>
-        <p>Diese Website wurde, gemeinsam mit der Trackinghardware, die uns die Daten liefert, im Rahmen eines Semesterprojekts an der FH Vorarlberg entwickelt. </br></p>
-        Hintergrund bla bla bla
+    Diese Bedienungsanleitung ist noch nicht vollständig und wird regelmäßig erweitert.
+    <h1>Website</h1>
+    <h2>Icons</h2>
+    <table>
+        <tr>
+            <td> <img src="laeufer_black.png" width="50" height="50" alt="Läufer Icon"> </td>
+            <td> Der Läufer markiert die letzte bekannte Position des Stabs auf dem ausgewählten Track.
+        </tr>
+        <tr>
+            <td> <img src="cursor.png" width="50" height="50" alt="Standort Marker"> </td>
+            <td> Der Pfeil markiert den Standort des Website-Nutzers. Je nachdem, welche Ortungsmethoden zur Verfügung stehen, kann der Standort deutlich vom tatsächlichen Standort abweichen. Bei Mobilgeräten ist er in der Regel aber sehr genau. </td>
+    </tr>
+    </table>
     </div>
     <div>
-        <h1>Tracks auswählen</h1>
-        Unsere Datenschutzerklärung befindet sich <a href="privacy.php">hier</a>
-        <h2>Verantwortlich nach §5 Telemediengesetz</h2>
-        Max Mustermann </br>
-        Beispielweg 10 </br>
-        31337 Astadt
+        <h2>Adminpanel</h1>
+        <h3>Zugang</h2>
+        Zugang zum Adminpanel haben nur vorher bestätigte Nutzer, die sich mit ihren Logindaten anmelden müssen. Es wird nur Personen, die an der Organisation des Laufs oder dem Betrieb des Systems beteiligt sind, Zugang gewährt. 
+        Nachdem ein Nutzer sich regristiert hat muss er noch manuell freigeschaltet werden. 
     </div>
-    <div>
-        <h1>Adminpanel</h1>
-        <h2>Wangen im Allgäu</h2>
-        <a href="https://www.wangen.de/buerger/stadt-ortschaften/partnerstaedte/la-garenne-colombes.html">Partnerschaft mit La Garenne-Colombes</a>
-        <h2>Projekt</h2>
-        <a href="fhv.at">Fachhochschule Vorarlberg</a></br>
-        <a href="fhv.at">Projektdokumentation</a>
-    </div>
+    <h1>Staffelstab</h1>
+    <h2>Verhalten</h2>
+    Wenn der Stab eingeschaltet ist, sendet er alle 120 Sekunden seinen Standort. 
+    <h2>Knopf</h2>
+    Mit dem Knopf kann die Status-LED ausgelöst und ein Sendevorgang gestartet werden. Da das Senden Energie kostet sollte der Knopf möglichst wenig gedrückt werden. Der Stab sendet auch ohne Aufforderung alle 120 Sekunden!
+    <h2>Status-LED</h2>
+    Der Stab gibt über die Farbe und Blinken/Dauersignal der LED an, wie voll der Akku ist. Dies geschieht immer kurz bevor auch ein Sendevorgang stattfindet.
 </body>

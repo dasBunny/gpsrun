@@ -27,16 +27,16 @@
     <div id="mapid" class="mapdisplay"></div>
     <button class="mobilebtn" onclick="openNav()">☰ Optionen</button>
     <div id="mySidebar" class="sidebar">
-        <center><a href="#">Adminpanel</a></center>
+        <center><a href="adminpanel.php">Adminpanel</a></center>
         <a> </a>
-        <center><a href="#">Infos</a></center>
+        <center><a href="about.php">Infos</a></center>
         <a> </a>
-        <center><a href="#">Anleitung</a></center>
+        <center><a href="manual.php">Anleitung</a></center>
         <a> </a>
-        <center><a href="#">Track auswählen</a></center>
-        <center><a><select id="select1" name="select1">
+        <center><a>Track auswählen</a></center>
+        <center><a><select id="select2">
             <option>Loading...</option>
-        </select> <button onclick="update1()">GO</button></a></center>
+        </select> <button onclick="update2()">GO</button></a></center>
 
     </div>
     <script>
@@ -58,7 +58,17 @@
             trackname1 = e.options[e.selectedIndex].value;
             console.log(trackname1);
             update();
+            mymap.fitBounds(line3.getBounds());
+            
         }
+        function update2(){
+            var e = document.getElementById("select2");
+            trackname1 = e.options[e.selectedIndex].value;
+            console.log(trackname1);
+            update();
+            mymap.fitBounds(line3.getBounds());
+        }
+
         function populateSelectMenu() {
             $.ajax({
                 type: "POST",
@@ -80,6 +90,27 @@
                 }
             });
         }
+        function populateMobileMenu() {
+            $.ajax({
+                type: "POST",
+                url: "get_tracknames.php",
+                data: {},
+                dataType:'JSON', 
+                success: function(response){
+                    console.log(response);
+                    var select = document.getElementById('select2'), i = 0, il=response.length, length = select.options.length;
+                    for (j = length-1; j >= 0; j--) {
+                        select.options[j] = null;
+                    }
+                    for(;i<il;i++){
+                        var opt = document.createElement("option");
+                        opt.value=response[i];
+                        opt.innerHTML = response[i];
+                        select.appendChild(opt);
+                    }
+                }
+            });
+        }
         var sidebarOpen = false;
         function openNav() {
             if(sidebarOpen){
@@ -88,7 +119,7 @@
             }else{
                 document.getElementById("mySidebar").style.width = "100%";
                 sidebarOpen = true;
-                populateSelectMenu();
+                populateMobileMenu();
             }
         }
 
@@ -153,6 +184,7 @@
                 firstClientPos = false;
             }
             else{
+                console.log("Updating Positon");
                 location_marker.setLatLng(L.latLng(position.coords.latitude,position.coords.longitude));
             }
         }
