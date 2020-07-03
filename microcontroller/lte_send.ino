@@ -22,6 +22,7 @@
  
 //defines-----------------------------------------------------------------------------------------
 #define MAX_INIT_TRIES 20			//Max tries to wake up modem
+#define MAX_HTTP_CON_TRIES 10 //Max tries to establish http connection
 #define SIZE_AT 256
 #define SIZE_AT_RESPONSE 1024
 #define SIZE_OUT SIZE_AT_RESPONSE + 128
@@ -371,71 +372,120 @@ int getGpsPos(float timeout)
 }
 
 int httpGetSim(const double lat, const double lon, const char *timestamp)
-{
-	char *cptr;
-	if (send_at("AT+CNACT?", "+CNACT: 0,1", 1.0) == 0)
-		{
-			printSerial("HTTP ERROR: App Network not ready");
-			return -1;
-		}
-	printSerial("Check open http socket");
-	if (send_at("AT+SHSTATE?", "+SHSTATE: 0", 1.0) == 0)	//if socket is still open?
-	{
-		send_at("AT+SHDISC", "OK", 1.0); //close it
-	}
-	//sprintf(at, "AT+SHCONF=\"URL\",\"http://%s:%d\"", host, httpPort);
-   sprintf(at, "AT+SHCONF=\"URL\",\"http://%s\"", host);
-
-	printSerial("Set url '%s'", at);
-	send_at(at, "OK", 10.0);
-	printSerial("Set body length");
-	send_at("AT+SHCONF=\"BODYLEN\",350", "OK", 10.0);
-	printSerial("Set header length");
-	send_at("AT+SHCONF=\"HEADERLEN\",350", "OK", 10.0);
-	printSerial("Open Socket");
-	while (send_at("AT+SHCONN", "OK", 10.0) < 0)
-	{
-		printSerial("# ERROR open http socket");
-      //if (send_at("AT+SHSTATE?", "+SHSTATE: 0", 1.0) == 0)  //if socket is s open?
-      {
-         send_at("AT+SHDISC", "OK", 1.0); //close it
-      }
-
-		//activateAppNetwork(false);
-		//return -1;
-	}
-	printSerial("Get socket state");
-	send_at("AT+SHSTATE?", "OK", 10.0);
-	printSerial("Change Header");
-	send_at("AT+SHCHEAD", "OK", 10.0);
-	send_at("AT+SHAHEAD=\"Accept\",\"text/html, */*\"", "OK", 10.0);
-	send_at("AT+SHAHEAD=\"User-Agent\",\"IOE Client\"", "OK", 10.0);
-	send_at("AT+SHAHEAD=\"Content-Type\",\"application/x-www-form-urlencoded\"", "OK", 10.0);
-	send_at("AT+SHAHEAD=\"Connection\",\"close\"", "OK", 10.0);
-	send_at("AT+SHAHEAD=\"Cache-control\",\"no-cache\"", "OK", 10.0);
-	sprintf(at, "AT+SHREQ=\"http://%s:%d/lat=%f/lng=%f/tk=%s/ts=%s\",1", host, httpPort, lat, lon, token, timestamp);
-	printSerial("GET '%s'", at);
-#ifdef HTTP_UPLOAD
-	send_at(at, "OK", 10.0);
-	delay(100);
-	read_ser("+SHREQ: \"GET\"", 20.0);	//Wait for further input
-	cptr = strtok(atResponse, ",");  //+SHREQ: "GET"
-	cptr = strtok(NULL, ",");        //http return code 301 ??
-	cptr = strtok(NULL, "\n");       //http return size
-   sprintf(at,"AT+SHREAD=0,%s", cptr);
-	send_at(at, "OK", 10.0);
-	read_ser("+SHREAD:", 20.0); //Wait for further input
-   delay(500);
-#else
-  printSerial("HTTP UPLOAD SKIPPED");
-#endif
-	if (send_at("AT+SHSTATE?", "+SHSTATE: 0", 1.0) == 0)  //if socket is s open?
    {
+   int counter = 0;
+  char *cptr;
+   int ret = 0;
+  if (send_at("AT+CNACT?", "+CNACT: 0,1", 1.0) == 0)
+    {
+    printSerial("HTTP ERROR: App Network not ready");
+    return -1;
+    }
+  printSerial("Check open http socket");
+  if (send_at("AT+SHSTATE?", "+SHSTATE: 0", 1.0) == 0)  //if socket is still open?
+     {
+    send_at("AT+SHDISC", "OK", 1.0); //close it
+     }
+   //sprintf(at, "AT+SHCONF=\"URL\",\"http://%s\"", host);
+   sprintf(at, "AT+SHCONF=\"URL\",\"http://%s:%d\"", host, httpPort);
+  //sprintf(at, "AT+SHCONF=\"URL\",\"%s:%d\"", host, httpPort);
+   //sprintf(at, "AT+SHCONF=\"URL\",\"http://www.%s:%d\"", host, httpPort);
+   //sprintf(at, "AT+SHCONF=\"URL\",\"http://5.9.255.21:1949\"");
+
+  printSerial("Set url '%s'", at);
+  send_at(at, "OK", 10.0);
+  printSerial("Set body length");
+  send_at("AT+SHCONF=\"BODYLEN\",350", "OK", 10.0);
+  printSerial("Set header length");
+  send_at("AT+SHCONF=\"HEADERLEN\",350", "OK", 10.0);
+   send_at("AT+SHCONF?", "OK", 10.0);
+  printSerial("Open Socket");
+  while (send_at("AT+SHCONN", "OK", 10.0) < 0)
+     {
+    printSerial("# ERROR open http socket");
+      if (send_at("AT+SHSTATE?", "+SHSTATE: 0", 1.0) == 0)  //if socket is s open?
+         {
+         send_at("AT+SHDISC", "OK", 1.0); //close it
+         }
+      if (counter++ > MAX_HTTP_CON_TRIES)
+         {
+         return -2;
+         }
+    //activateAppNetwork(false);
+    //return -1;
+     }
+  printSerial("Get socket state");
+  send_at("AT+SHSTATE?", "OK", 10.0);
+  printSerial("Change Header");
+  send_at("AT+SHCHEAD", "OK", 10.0);
+  //send_at("AT+SHAHEAD=\"Accept\",\"text/html, */*\"", "OK", 10.0);
+   send_at("AT+SHAHEAD=\"Accept\",\"*/*\"", "OK", 10.0);
+  send_at("AT+SHAHEAD=\"User-Agent\",\"IOT Client\"", "OK", 10.0);
+   //send_at("AT+SHAHEAD=\"User-Agent\",\"Opera\"", "OK", 10.0);
+  //send_at("AT+SHAHEAD=\"Content-Type\",\"application/x-www-form-urlencoded\"", "OK", 10.0);
+  //send_at("AT+SHAHEAD=\"Content-Type\",\"text/html\"", "OK", 10.0);
+//   send_at("AT+SHAHEAD=\"Connection\",\"close\"", "OK", 10.0);
+   //send_at("AT+SHAHEAD=\"Connection\",\"keep-alive\"", "OK", 10.0);
+  //send_at("AT+SHAHEAD=\"Cache-control\",\"no-cache\"", "OK", 10.0);
+   printSerial("Get HTTP Configuration");
+   send_at("AT+SHCONF?", "OK", 10.0);
+   send_at("AT+SHSSL?", "OK", 10.0);
+   send_at("AT+SHBOD?", "OK", 10.0);
+   send_at("AT+SHAHEAD?", "OK", 10.0);
+   send_at("AT+SHPARA?", "OK", 10.0);
+   send_at("AT+SHSTATE?", "OK", 10.0);
+
+   //Request type: GET 1 PUT 2 POST 3 PATCH 4
+   //sprintf(at, "AT+SHREQ=\"http://%s:%d/lat=%f/lng=%f/tk=%s/ts=%s\",1", host, httpPort, lat, lon, token, timestamp);
+   //sprintf(at, "AT+SHREQ=\"http://%s:%d/lat=%f/lng=%f/tk=%s/ts=%s/\",1", host, httpPort, lat, lon, token, timestamp);
+   //sprintf(at, "AT+SHREQ=\"/lat=%f/lng=%f/tk=%s/ts=%s\",1", lat, lon, token, timestamp);  //GET
+   sprintf(at, "AT+SHREQ=\"/lat=%f/lng=%f/tk=%s/ts=%s\",5", lat, lon, token, timestamp);  //HEAD
+   //sprintf(at, "AT+SHREQ=\"/lat=%f/lng=%f/tk=%s/ts=%s/\",1", lat, lon, token, timestamp);
+   //sprintf(at, "AT+SHREQ=\"https://%s:%d/lat=%f/lng=%f/tk=%s/ts=%s\",1", host, httpPort, lat, lon, token, timestamp);
+   //sprintf(at, "AT+SHREQ=\"http://www.%s:%d/lat=%f/lng=%f/tk=%s/ts=%s\",1", host, httpPort, lat, lon, token, timestamp);
+   //sprintf(at, "AT+SHREQ=\"http://5.9.255.21:1949/lat=%f/lng=%f/tk=%s/ts=%s\",1", lat, lon, token, timestamp);
+   //sprintf(at, "AT+SHREQ=\"http://%s/lat=%f/lng=%f/tk=%s/ts=%s\",1", host, lat, lon, token, timestamp);
+  printSerial("GET '%s'", at);
+#ifdef HTTP_UPLOAD
+  send_at(at, "OK", 10.0);
+   send_at("AT+SHREQ?", "OK", 10.0);
+  delay(100);
+  ret = read_ser("+SHREQ: ", 70.0); //Wait for further input default http timeout = 60 sec
+   if (ret == 1)
+      {
+     cptr = strtok(atResponse, ",");  //+SHREQ: "GET"
+     cptr = strtok(NULL, ",");        //http return code 301 ??
+      if (!strcmp(cptr, "200"))
+         {
+         printSerial("HTTP OK");
+         }
+      else
+         {
+         printSerial("HTTP ERROR %s", cptr);
+         }
+     cptr = strtok(NULL, "\n");       //http return size
+      if (cptr[0] != '0')
+         {
+         sprintf(at,"AT+SHREAD=0,%s", cptr);
+        send_at(at, "OK", 10.0);
+        read_ser("+SHREAD:", 20.0); //Wait for further input
+         delay(500);
+         }
+      else
+         {
+         printSerial("No HTTP Data");
+         }
+      }
+#else
+   printSerial("HTTP UPLOAD SKIPPED");
+#endif
+  if (send_at("AT+SHSTATE?", "+SHSTATE: 0", 1.0) == 0)  //if socket is s open?
+      {
       send_at("AT+SHDISC", "OK", 1.0); //close it
+      }
+  //activateAppNetwork(false);
+  return 0;
    }
-	//activateAppNetwork(false);
-	return 0;
-}
 
 
 
