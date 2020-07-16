@@ -3,6 +3,11 @@
 bool filter_gps(float flat, float flon) {
 
   EEPROM_STRUCT readData = {0.0,0.0,""};
+
+  if((flat < 0.1) || (flon < 0.1) )
+  {
+    return false; 
+  }
   
   EEPROM.begin(512);                                        //Initialize EEPROM
   EEPROM.get(eeAddress, readData);                           //read old waypoint from EEPROM

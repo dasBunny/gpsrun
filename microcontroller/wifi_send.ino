@@ -27,7 +27,7 @@ Serial.print("connecting to ");
     url += "/lng=";
     url += String(flon,6);
     url += "/id=";
-    url += dev_id;
+    //url += dev_id;
     url += "/token=";
     url += token;
 

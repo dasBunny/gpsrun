@@ -60,7 +60,7 @@
       //#define SIM_DEEP_SLEEP
       #define GPS
       #define HTTP
-      //#define HTTP_UPLOAD
+      #define HTTP_UPLOAD
       //#define HTTP_UPLOAD_TEST
       //#define HTTP_TEST
 
@@ -177,15 +177,11 @@ void setup()
    Serial.println("check connection status");
    checkSimConnectionStatus();
    //activateAppNetwork(false);
-}
+
 
     
-//--------------------LOOP------------------------------------------
 
-
-void loop()
-{
-  Serial.println("---------------loop begins!----------------");
+Serial.println("-------------------------------");
   double lat;
   double lon;
   bool send_succesful = false;
@@ -288,7 +284,7 @@ void loop()
 
           else
             {
-            Serial.println("distance between waypoints less than 50m -> no sending procedure");
+            Serial.println("distance between waypoints less than 50m or no valid position -> no sending procedure");
             }
 
             
@@ -320,7 +316,9 @@ void loop()
      Serial.println(SleepTimeS);
      Sleep(SleepTimeS, wifi_enable); 
     //}
-    
 
+}
 
+void loop()
+{
 }

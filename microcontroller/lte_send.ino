@@ -275,10 +275,20 @@ int setupSim7080NBIot1nce()
 	send_at("AT+CGDCONT=1,\"IP\",\"iot.1nce.net\",\"0.0.0.0\",0,0,0", "OK", 0.5);
 	printSerial("Set APN for 1nce with PAP auth");
 	send_at("AT+CNCFG=0,1,\"iot.1nce.net\",\"\",\"\",1", "OK", 0.5);
-	printSerial("Operator selection 1nce - Telekom");
-	send_at("AT+COPS=1,2,\"26201\",9", "OK",120.0);
+  
+	printSerial("Operator selection 1nce - Telekom"); 
+	if((send_at("AT+COPS=1,2,\"26201\",9", "OK",120.0))<0)
+  {
+    Serial.println("Goto sleep because of error in AT+COPS=...");
+    Sleep(SleepTimeS, wifi_enable);
+  }
+ 
 	printSerial("Network registration");
-	send_at("AT+CREG=0", "OK", 150.0);
+	if((send_at("AT+CREG=0", "OK", 150.0))<0)
+ {
+  Serial.println("Goto sleep because of error in AT+CREG=0");
+  Sleep(SleepTimeS, wifi_enable);
+ }
 	return 0;
 }
 
@@ -358,13 +368,18 @@ int activateAppNetwork(bool activate)
 int getGpsPos(float timeout)
 {
    printSerial("++ Get GPS position (%.2f)", timeout);
-	send_at("AT+SGNSCMD=1,0", "OK", 10.0);
+	if((send_at("AT+SGNSCMD=1,0", "OK", 10.0))<0)
+ {
+  Serial.println("Goto sleep because of error in AT+SGNSCMD=...");
+    Sleep(SleepTimeS, wifi_enable);
+ }
+ 
 	delay(100);
 	read_ser("+SGNSCMD:", timeout);
    parseAtResponse(gpspar);
    strcpy(slat, val[2]);
    strcpy(slon, val[3]);
-   strcpy(stimestamp, val[10]);
+   strcpy(stimestamp, val[9]);
 
 	delay(100);
 	send_at("AT+SGNSCMD=0", "OK", 10.0);
