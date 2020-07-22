@@ -27,3 +27,5 @@ microcontroller/TinyGPSPlus/README.md
 .vscode/c_cpp_properties.json
 .vscode/arduino.json
 events.log
+events.log
+http-handler/device_ids.py

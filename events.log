@@ -32,3 +32,163 @@ INFO:root:[2020-05-27 01:34:22] Received GET request: /lat=51.0/lng=9.0/token=12
 INFO:root:[2020-05-27 01:34:22] Date was send: 2009-12-12 2:44:22
 INFO:root:[2020-05-27 01:34:22] Matching parameters, checking token.
 INFO:root:[2020-05-27 01:34:22] Token OK - Inserting data with trackname karren
+INFO:root:[2020-07-22 10:33:38] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 10:33:48] Received HEAD request: /lat=53.32/lng=9.35/tk=T78IVws51zOfWRX1EEf7/ts=23512367
+INFO:root:[2020-07-22 10:33:48] Checking token.
+INFO:root:[2020-07-22 10:35:19] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 10:35:24] Received HEAD request: /lat=53.32/lng=9.35/tk=T78IVws51zOfWRX1EEf7/ts=23512367
+INFO:root:[2020-07-22 10:35:24] Checking token.
+INFO:root:[2020-07-22 10:37:00] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 10:37:02] Received HEAD request: /lat=53.32/lng=9.35/tk=T78IVws51zOfWRX1EEf7/ts=23512367
+INFO:root:[2020-07-22 10:37:02] Checking token.
+INFO:root:[2020-07-22 10:37:02] Missing parameters
+INFO:root:[2020-07-22 10:40:20] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 10:40:23] Received HEAD request: /lat=53.32/lng=9.35/tk=T78IVws51zOfWRX1EEf7/ts=23512367
+INFO:root:[2020-07-22 10:40:23] Checking token.
+INFO:root:[2020-07-22 10:40:23] All required parameters are given
+INFO:root:[2020-07-22 10:40:23] Missing parameters
+INFO:root:[2020-07-22 10:42:21] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 10:42:23] Received HEAD request: /lat=53.32/lng=9.35/tk=T78IVws51zOfWRX1EEf7/ts=23512367
+INFO:root:[2020-07-22 10:42:23] Checking token.
+INFO:root:[2020-07-22 10:42:23] Database: No entry with this token.
+INFO:root:[2020-07-22 10:43:04] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 10:43:06] Received HEAD request: /lat=53.32/lng=9.35/tk=T78IVws51zOfWRX1EEf7/ts=23512367
+INFO:root:[2020-07-22 10:43:06] Checking token.
+INFO:root:[2020-07-22 10:43:06] Database: No entry with this token.
+INFO:root:[2020-07-22 10:49:34] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 10:49:38] Received HEAD request: /lat=53.32/lng=9.35/tk=T78IVws51zOfWRX1EEf7/ts=23512367
+INFO:root:[2020-07-22 10:49:38] Checking token.
+INFO:root:[2020-07-22 10:49:38] Database: No entry with this token.
+INFO:root:[2020-07-22 10:50:04] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 10:50:04] Checking token.
+INFO:root:[2020-07-22 10:50:04] Database: No entry with this token.
+INFO:root:[2020-07-22 10:50:28] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 10:50:31] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 10:50:31] Checking token.
+INFO:root:[2020-07-22 10:50:31] Database: No entry with this token.
+INFO:root:[2020-07-22 10:51:47] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 10:51:51] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 10:51:51] Checking token.
+INFO:root:[2020-07-22 10:51:51] Database: No entry with this token.
+INFO:root:[2020-07-22 10:55:30] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 10:55:33] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 10:55:33] Checking token.
+INFO:root:[2020-07-22 10:56:44] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 10:56:48] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 10:56:48] Checking token.
+INFO:root:[2020-07-22 10:56:58] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 10:57:00] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 10:57:00] Checking token.
+INFO:root:[2020-07-22 10:57:00] Database: No entry with this token.
+INFO:root:[2020-07-22 11:32:48] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 11:32:50] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 11:32:50] Checking token.
+INFO:root:[2020-07-22 11:32:50] Database: No entry with this token.
+INFO:root:[2020-07-22 11:33:08] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 11:33:11] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 11:33:11] Checking token.
+INFO:root:[2020-07-22 11:33:36] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 11:33:39] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 11:33:39] Checking token.
+INFO:root:[2020-07-22 11:33:52] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 11:33:54] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 11:33:54] Checking token.
+INFO:root:[2020-07-22 11:33:54] Matching token, trackname is stöberhai
+INFO:root:[2020-07-22 11:33:54] All required parameters are given
+INFO:root:[2020-07-22 11:33:54] Missing parameters
+INFO:root:[2020-07-22 13:17:50] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 13:17:51] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 13:17:51] Checking token.
+INFO:root:[2020-07-22 13:17:52] Database: No entry with this token.
+INFO:root:[2020-07-22 13:18:09] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 13:18:11] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 13:18:11] Checking token.
+INFO:root:[2020-07-22 13:18:11] Database: No entry with this token.
+INFO:root:[2020-07-22 13:18:29] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 13:18:30] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 13:18:30] Checking token.
+INFO:root:[2020-07-22 13:18:30] Database: No entry with this token.
+INFO:root:[2020-07-22 13:24:02] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 13:24:04] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 13:24:04] Checking token.
+INFO:root:[2020-07-22 13:24:05] Matching token, trackname is stöberhai
+INFO:root:[2020-07-22 13:24:05] All required parameters are given
+INFO:root:[2020-07-22 13:24:05] Missing parameters
+INFO:root:[2020-07-22 13:24:22] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 13:24:23] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=23512367
+INFO:root:[2020-07-22 13:24:23] Checking token.
+INFO:root:[2020-07-22 13:24:23] Matching token, trackname is stöberhai
+INFO:root:[2020-07-22 13:24:23] All required parameters are given
+INFO:root:[2020-07-22 13:24:23] Missing parameters
+INFO:root:[2020-07-22 13:33:40] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 13:33:48] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/
+INFO:root:[2020-07-22 13:33:48] Checking token.
+INFO:root:[2020-07-22 13:33:48] Matching token, trackname is Video3
+INFO:root:[2020-07-22 13:33:48] All required parameters are given
+INFO:root:[2020-07-22 13:33:48] No timestamp received from device, continuing without one.
+INFO:root:[2020-07-22 13:36:09] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 13:36:11] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/
+INFO:root:[2020-07-22 13:36:11] Checking token.
+INFO:root:[2020-07-22 13:36:11] Matching token, trackname is Video3
+INFO:root:[2020-07-22 13:36:11] All required parameters are given
+INFO:root:[2020-07-22 13:36:11] No timestamp received from device, continuing without one.
+INFO:root:[2020-07-22 13:38:03] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 13:38:06] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/
+INFO:root:[2020-07-22 13:38:06] Checking token.
+INFO:root:[2020-07-22 13:38:06] Matching token, trackname is Video3
+INFO:root:[2020-07-22 13:38:06] All required parameters are given
+INFO:root:[2020-07-22 13:38:06] No timestamp received from device, continuing without one.
+INFO:root:[2020-07-22 13:39:18] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 13:39:20] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/
+INFO:root:[2020-07-22 13:39:20] Checking token.
+INFO:root:[2020-07-22 13:39:20] Matching token, trackname is Video3
+INFO:root:[2020-07-22 13:39:20] All required parameters are given
+INFO:root:[2020-07-22 13:39:20] No timestamp received from device, continuing without one.
+INFO:root:[2020-07-22 13:41:08] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 13:41:09] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/
+INFO:root:[2020-07-22 13:41:09] Checking token.
+INFO:root:[2020-07-22 13:41:09] Matching token, trackname is Video3
+INFO:root:[2020-07-22 13:41:09] All required parameters are given
+INFO:root:[2020-07-22 13:41:09] No timestamp received from device, continuing without one.
+INFO:root:[2020-07-22 13:42:22] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 13:42:24] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/
+INFO:root:[2020-07-22 13:42:24] Checking token.
+INFO:root:[2020-07-22 13:42:24] Matching token, trackname is Video3
+INFO:root:[2020-07-22 13:42:24] All required parameters are given
+INFO:root:[2020-07-22 13:42:24] No timestamp received from device, continuing without one.
+INFO:root:[2020-07-22 13:58:25] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 13:59:49] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 14:00:03] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=0x17366c5c580
+INFO:root:[2020-07-22 14:00:03] Checking token.
+INFO:root:[2020-07-22 14:00:03] Matching token, trackname is Video3
+INFO:root:[2020-07-22 14:00:03] All required parameters are given
+INFO:root:[2020-07-22 14:00:53] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 14:00:56] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=0x17366c5c580
+INFO:root:[2020-07-22 14:00:56] Checking token.
+INFO:root:[2020-07-22 14:00:56] Matching token, trackname is Video3
+INFO:root:[2020-07-22 14:00:56] All required parameters are given
+INFO:root:[2020-07-22 14:02:40] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 14:02:43] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=0x17366c5c580
+INFO:root:[2020-07-22 14:02:43] Checking token.
+INFO:root:[2020-07-22 14:02:43] Matching token, trackname is Video3
+INFO:root:[2020-07-22 14:02:43] All required parameters are given
+INFO:root:[2020-07-22 14:03:27] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 14:03:34] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=0x17366c5c580
+INFO:root:[2020-07-22 14:03:34] Checking token.
+INFO:root:[2020-07-22 14:03:34] Matching token, trackname is Video3
+INFO:root:[2020-07-22 14:03:34] All required parameters are given
+INFO:root:[2020-07-22 14:03:34] Received timestamp from device, converting...
+INFO:root:[2020-07-22 14:03:45] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 14:03:47] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=0x17366c5c580
+INFO:root:[2020-07-22 14:03:47] Checking token.
+INFO:root:[2020-07-22 14:03:47] Matching token, trackname is Video3
+INFO:root:[2020-07-22 14:03:47] All required parameters are given
+INFO:root:[2020-07-22 14:03:47] Received timestamp from device, converting...
+INFO:root:[2020-07-22 14:04:44] DSS HTTP Server listening at Port  1949
+INFO:root:[2020-07-22 14:04:45] Received HEAD request: /lat=53.32/lng=9.35/tk=testtoken/ts=0x17366c5c580
+INFO:root:[2020-07-22 14:04:45] Checking token.
+INFO:root:[2020-07-22 14:04:45] Matching token, trackname is Video3
+INFO:root:[2020-07-22 14:04:45] All required parameters are given
+INFO:root:[2020-07-22 14:04:45] Timestamp converted to 2020-07-19 11:11:44
+INFO:root:[2020-07-22 14:04:45] Received timestamp from device, converting...
+INFO:root:[2020-07-22 14:04:45] Inserting completed.

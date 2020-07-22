@@ -9,9 +9,10 @@ import mysql.connector
 from db_login import mydb
 
 mycursor = mydb.cursor()
-mycursor.execute("SELECT trackname,token FROM devices WHERE id='server' LIMIT 1")
+tk = 'testtoken'
+mycursor.execute("SELECT trackname FROM devices WHERE longToken='%s' LIMIT 1")
 myresult = mycursor.fetchall()
-token = myresult[0][1]
+#token = myresult[0][1]
 trackname=myresult[0][0]
-print(token)
+#print(token)
 print(trackname)

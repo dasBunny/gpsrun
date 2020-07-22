@@ -11,8 +11,7 @@
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
     integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
     crossorigin=""></script>
-    <script> 
-    </script>
+    <script src="scripts/leaflet-svg-shape-markers.min.js"></script>
 </head>
 <body>
     <ul class="top">
@@ -139,7 +138,11 @@
                     console.log(response.track[1]);
                     line3.setLatLngs(response.track);
                     runner_2.setLatLng(L.latLng(parseFloat(response.marker["lat"]), parseFloat(response.marker["long"])));
-                    runner_2.bindTooltip(json_result.marker["timestamp"]+"<br>"+calcuateLength(line3.getLatLngs())+"km", {permanent: false, className: "my-label", offset: [0, 0] });
+                    runner_2.bindTooltip(response.marker["timestamp"]+"<br>"+calcuateLength(line3.getLatLngs())+"km", {permanent: false, className: "my-label", offset: [0, 0] });
+                    points=[];
+                    mymap.removeLayer(trackMarkers);
+                    response.track.forEach(pointsTooltipHelper);
+                    trackMarkers = L.layerGroup(points).addTo(mymap);
                 }       
             });
             console.log("Updating map");
@@ -162,7 +165,7 @@
                     runner_2.bindTooltip("<b>Übermittlungszeitpunkt</b></br>"+json_result.marker["timestamp"]+"<br><b>Zurückgelegte Distanz</b></br>"+calcuateLength(line3.getLatLngs())+"km", {permanent: false, className: "my-label", offset: [0, 0] });
                     mymap.fitBounds(preview_line.getBounds());
                     json_result.track.forEach(pointsTooltipHelper);
-                    points.forEach(pointsMapAdder);
+                    trackMarkers = L.layerGroup(points).addTo(mymap);
                     if(navigator.geolocation){
                         console.log("Geolocation available");
                         navigator_watch_id = navigator.geolocation.watchPosition(watchPosition);
@@ -173,6 +176,10 @@
                 }
             });
             setInterval(update,20000);
+        }
+
+        function clearMarkers(point){
+            mymap.removeLayer(point);
         }
 
         function watchPosition(position){
@@ -196,18 +203,15 @@
             console.log(client_long);
         }
 
-        function pointsMapAdder(point){
-            point.addTo(mymap);
-        }
-
         function pointsTooltipHelper(point){
-            temp_marker = L.marker(L.latLng(parseFloat(point[0]), parseFloat(point[1])),{opacity: 0,riseOnHover: true});
+            temp_marker = L.shapeMarker(L.latLng(parseFloat(point[0]), parseFloat(point[1])),{shape: "diamond", color: "orange", radius: 2, riseOnHover: true});
             temp_marker.bindTooltip("<b>Übermittlungszeitpunkt</b></br>"+point[2], {permanent: false, className: "my-label", offset: [0, 0] });
             points.push(temp_marker);
         }
         var firstClientPos = true;
         var client_lat = 0.0;
         var client_long = 0.0;
+        var trackMarkers;
         var points = [];
         var mymap = L.map('mapid').setView([50, 8.8], 7);
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZGFzYnVubnkiLCJhIjoiY2s3amdmNDRhMHQ0bDNrbzJwazd3eGFtMCJ9.NF3ZMkRlGqK08TK617teKw', {
