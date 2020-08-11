@@ -7,13 +7,28 @@ import time
 import datetime
 import mysql.connector
 from db_login import mydb,PORT
+import threading
+import paho.mqtt.client as mqtt
 
 HOST = ''
 PORT = 1949
 
+lastTransmission = 0
+
 #preparing logging
 LOG_FILENAME = 'events.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+
+def reportStatus():
+	while True:
+		print("Reporting to Status system.")
+		client = mqtt.Client()
+		client.connect("dasbunny.at",1883,60)
+		client.publish("status", json.dumps({"id": "gpsrun_receiver","status": "Last message at {}".format(lastTransmission)}))
+		client.disconnect()
+		time.sleep(280)
+
+
 def logtofile(msg):
 	ts = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 	logging.info("["+ts+"] "+msg)
@@ -37,6 +52,7 @@ class myHandler(BaseHTTPRequestHandler):
 
 		#get time when data was received
 		time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		lastTransmission = time
 		print("--- TIME ", ts, " ----------------------")
 		print("HEAD request,\nPath:  \t", str(self.path), "\nHeaders:\t", str(self.headers), "\n")
 		#Splitting the request to get the different parameters
@@ -159,6 +175,10 @@ class myHandler(BaseHTTPRequestHandler):
 #		httpd.server_close()
 		
 mycursor = mydb.cursor()
+
+myThread = threading.Thread(target=reportStatus)
+myThread.daemon = True
+myThread.start()
 
 if __name__ == '__main__':
 	server_class = HTTPServer
